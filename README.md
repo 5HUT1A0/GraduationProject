@@ -208,9 +208,14 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 这里就是可交互物品的基类
 
 实现的功能有：
-1
+**1. 抓取函数（调用于PlayerCharacter的Use回调函数中）**
+
+-InteractiveItemsBase.h
+```
+
+```
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTU3Mjg1ODY2OCw2NTg4MjI5NjEsMjg5ND
-ExNTZdfQ==
+eyJoaXN0b3J5IjpbODc0NTMzMzU0LDY1ODgyMjk2MSwyODk0MT
+E1Nl19
 -->
