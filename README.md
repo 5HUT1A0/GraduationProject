@@ -174,9 +174,13 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 
 	if (bHit)
 	{
-		//Debug
+				//Debug
 		DrawDebugPoint(GetWorld(), HitResult.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Hit Actor Name:%s"), *HitResult.GetActor()->GetName()));
+
+		//实现抓取
+		AInteractiveItemsBase* GrabTarget = Cast<AInteractiveItemsBase>(HitResult.GetActor());
+		GrabTarget->Grab(RightHand);
 	}
 	else
 	{
@@ -199,7 +203,8 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 这个就简单多了，直接将InputValue的XY方向的数值传入AddControllerYawInput（）和AddControllerPitchInput（）函数中。（注意：控制Pitch旋转的Y值要为相反值）
 
 **Use回调函数实现的抓取物品逻辑：**
-这个我还没有完全实现，还在Debug阶段
+获取
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjU4ODIyOTYxLDI4OTQxMTU2XX0=
+eyJoaXN0b3J5IjpbLTE4NTU4NDQ2NSw2NTg4MjI5NjEsMjg5ND
+ExNTZdfQ==
 -->
