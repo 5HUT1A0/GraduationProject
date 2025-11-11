@@ -1,9 +1,12 @@
 
 # 虚拟实验室
 ## 项目介绍
-这个项目是作为我的毕业设计和当作一次UE C++练手。游戏内容如项目名称而言，就是一个模拟实验操作的游戏，我打算在游戏中设计一个实验，让玩家进行实验步骤操作。如果后续还有时间就再加多一个实验关卡。
+这个项目是作为我的毕业设计和当作一次UE C++学习练手。游戏内容如项目名称而言，就是一个模拟实验操作的游戏，我打算在游戏中设计一个实验，让玩家进行实验步骤操作。如果后续还有时间就再加多一个实验关卡。
 
 ## 代码功能实现
+
+
+
 ### **VirtualLabPlayerController**
 我在这里实现的功能有：
 
@@ -30,6 +33,10 @@ if (UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<U
 }
 ```
 先获取本地玩家的增强输入子系统，再根据传入的上下文引用来绑定到玩家增强输入子系统中。
+
+
+
+
 
 ### PlayerCharacter
 在这里我实现的功能有：
@@ -188,5 +195,5 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 **我在Move回调函数实现的移动逻辑就是：**
 获取摄像机的Yaw轴的旋转矩阵，再通过这个旋转矩阵获取向前和向右方向的向量，最后将这两个向量通过AddMovementInput（FVector WorldDirection，float ScaleValue）来设置移动。
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjEzNDk0OTU0MiwyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbMTY4NDk4OTk4NiwyODk0MTE1Nl19
 -->
