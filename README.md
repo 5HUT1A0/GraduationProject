@@ -179,13 +179,14 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 
 ```
 
-### 一般呢设置增强输入就是这个流程：
+**一般呢设置增强输入就是这个流程：**
 1. 设置上下文（EnhancedInputSubsystem->AddMappingContext()）
 2. 绑定InputAction(EnhanceInputComponent->BindAction())
 3. 设置回调函数（也就是按键之后触发的逻辑）
 
 
-我在Move回调函数实现的移动逻辑就是：
+**我在Move回调函数实现的移动逻辑就是：**
+获取摄像机的向前和向右旋转矩阵
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTMzMTA5NTAwLDI4OTQxMTU2XX0=
+eyJoaXN0b3J5IjpbMTk2ODE4NDg2MCwyODk0MTE1Nl19
 -->
