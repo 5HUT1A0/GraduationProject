@@ -18,7 +18,18 @@
 ```
 头文件中设置传入上下文引用
 
-
+- VirtualLabPlayerController,cpp
+```
+if (UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+{
+	if(InputMapping.IsValid()||InputMapping.LoadSynchronous())
+	{
+		SubSystem->ClearAllMappings();
+		SubSystem->AddMappingContext(InputMapping.LoadSynchronous(), 0);
+	}
+}
+```
+根据chuan
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDAwMTYwMjYzLDI4OTQxMTU2XX0=
+eyJoaXN0b3J5IjpbMTcyNDY3NDkyMiwyODk0MTE1Nl19
 -->
