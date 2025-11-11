@@ -16,8 +16,9 @@
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
 ```
+头文件中设置
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTMyMzc3NjEzMSwyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbLTE4MzY5OTAyMjMsMjg5NDExNTZdfQ==
 -->
