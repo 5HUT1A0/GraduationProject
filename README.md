@@ -180,8 +180,9 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 ```
 
 一般呢设置增强输入就是这个流程：
-1. 设置上下文（在EnhancedInputSubsystem.AddMappingContent()）
-2. 绑定InputAction
+1. 设置上下文（EnhancedInputSubsystem->AddMappingContext()）
+2. 绑定InputAction(EnhanceInputComponent->BindAction())
+3. 设置回调函数（也就是按键之后触发的逻辑）
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODY1NjM5NDcwLDI4OTQxMTU2XX0=
+eyJoaXN0b3J5IjpbLTYzMzA0Njc1NiwyODk0MTE1Nl19
 -->
