@@ -226,8 +226,8 @@ void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
 	AttachToComponent(HandComponent, AttachRules);
 }
 ```
-主要就是通过AttachToComponent将Actor附加到设置好的Character场景z
+主要就是通过AttachToComponent将Actor附加到设置好的Character场景组件中
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTQwOTY3NjMyLDY1ODgyMjk2MSwyODk0MT
-E1Nl19
+eyJoaXN0b3J5IjpbLTE2NjAxOTUzNyw2NTg4MjI5NjEsMjg5ND
+ExNTZdfQ==
 -->
