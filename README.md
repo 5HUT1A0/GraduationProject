@@ -62,10 +62,14 @@ APlayerCharacter::APlayerCharacter()
 ```
 在Character构造时候创建摄像机。``CreateDefaultSubobject<UCameraComponent(TEXT("Camera"));``
 （先初始化）
+
 后将这个摄像机挂载到根组件下
-`` ``
-### (想要创建一个新的Component的话就需要先获取需要挂载的根组件)
+`` CameraCom->SetupAttachment(RootComp);``
+(想要创建一个新的Component的话就需要先获取需要挂载的根组件)
+
 同时设置Pawn随控制器旋转。
+
+**2.  绑定InputAction到增强输入中**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI5MTQ1OTA3MSwyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbLTQ1ODU4Njg1MiwyODk0MTE1Nl19
 -->
