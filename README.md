@@ -29,7 +29,7 @@ if (UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<U
 	}
 }
 ```
-根据chuan
+先获取本地玩家的增强输入子系统，再根据传入的上下文引用来绑定到玩家增强输入子系统中。
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTcyNDY3NDkyMiwyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbLTQ4MTI2NDU0NCwyODk0MTE1Nl19
 -->
