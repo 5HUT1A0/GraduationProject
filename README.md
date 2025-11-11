@@ -180,7 +180,8 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 ```
 
 一般呢设置增强输入就是这个流程：
-
+1. 设置上下文（在EnhancedInputSubsystem.AddMappingContent()）
+2. 绑定InputAction
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NjU5OTk1MTUsMjg5NDExNTZdfQ==
+eyJoaXN0b3J5IjpbODY1NjM5NDcwLDI4OTQxMTU2XX0=
 -->
