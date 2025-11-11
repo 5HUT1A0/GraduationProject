@@ -195,8 +195,10 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 **我在Move回调函数实现的移动逻辑就是：**
 获取摄像机的Yaw轴的旋转矩阵，再通过这个旋转矩阵获取向前和向右方向的向量，最后将这两个向量通过AddMovementInput（FVector WorldDirection，float ScaleValue）来设置移动。
 
-**我在Look回调函数实现的移动逻辑就是：**
-这个就简单多了，直接将InputValue的XY方向的shu'zhi
+**Look回调函数实现的射逻辑：**
+这个就简单多了，直接将InputValue的XY方向的数值传入AddControllerYawInput（）和AddControllerPitchInput（）函数中。（注意：控制Pitch旋转的Y值要为相反值）
+
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzA4OTY4NzMxLDI4OTQxMTU2XX0=
+eyJoaXN0b3J5IjpbMTMyMDgwNjcxMCwyODk0MTE1Nl19
 -->
