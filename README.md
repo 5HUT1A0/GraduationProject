@@ -6,9 +6,9 @@
 **VirtualLabPlayerController**
 我在这里实现的功能有
 
- 1. 绑定增强输入
+  绑定增强输入
  
- -VirtualLabPlayerController.h
+ - VirtualLabPlayerController.h
  ```
  protected:
 	/*输入映射上下文*/
@@ -17,5 +17,5 @@
 ```
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzc1NzI1ODIsMjg5NDExNTZdfQ==
+eyJoaXN0b3J5IjpbMTc4NTE1MTQ1NywyODk0MTE1Nl19
 -->
