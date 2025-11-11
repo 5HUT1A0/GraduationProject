@@ -7,7 +7,13 @@
 我在这里实现的功能有
 
  1. 绑定增强输入
+ ```
+ protected:
+	/*输入映射上下文*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TSoftObjectPtr<UInputMappingContext> InputMapping;
+```
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTkzNDc0Njg2MiwyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbMTc2NjU3OTc2MiwyODk0MTE1Nl19
 -->
