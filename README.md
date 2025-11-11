@@ -60,7 +60,8 @@ APlayerCharacter::APlayerCharacter()
 
 }
 ```
-在Character构造时候创建摄像机。（想要创建一个新的Component的话就需要先获取需要挂载的根组件）后将这个摄像机挂载到根组件xai
+在Character构造时候创建摄像机。``CreateDefaultSubobject<UCameraComponent(TEXT("Camera"));``
+（想要创建一个新的Component的话就需要先获取需要挂载的根组件）后将这个摄像机挂载到根组件下，同时
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNTk2Mjk3MzUsMjg5NDExNTZdfQ==
+eyJoaXN0b3J5IjpbLTgxNDkzMTUwOCwyODk0MTE1Nl19
 -->
