@@ -167,14 +167,14 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 	
-	bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, StartLocation, EndLocation, ECC_WorldStatic, Params);
+	bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, StartLocation, EndLocation, ECC_GameTraceChannel1, Params);
 	//Debug射线
 	FColor DebugColor = bHit ? FColor::Green : FColor::Red;
 	DrawDebugLine(GetWorld(), StartLocation, EndLocation,DebugColor, false, 2.f, 0, 1.f);
 
 	if (bHit)
 	{
-				//Debug
+		//Debug
 		DrawDebugPoint(GetWorld(), HitResult.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Hit Actor Name:%s"), *HitResult.GetActor()->GetName()));
 
@@ -187,7 +187,6 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("Hit Nothing") ));
 	}
 }
-
 ```
 
 **一般呢设置增强输入就是这个流程：**
@@ -203,8 +202,10 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 这个就简单多了，直接将InputValue的XY方向的数值传入AddControllerYawInput（）和AddControllerPitchInput（）函数中。（注意：控制Pitch旋转的Y值要为相反值）
 
 **Use回调函数实现的抓取物品逻辑：**
-获取
+获取射线检测碰到的物体对象，之后调用这个物体内部的Grab函数（自定义类）。
+
+### Inter
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4NTU4NDQ2NSw2NTg4MjI5NjEsMjg5ND
+eyJoaXN0b3J5IjpbLTY0NDk1MDcwNSw2NTg4MjI5NjEsMjg5ND
 ExNTZdfQ==
 -->
