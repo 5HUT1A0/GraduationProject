@@ -60,7 +60,7 @@ APlayerCharacter::APlayerCharacter()
 
 }
 ```
-在Character构造时候创建摄像机。
+在Character构造时候创建摄像机。（想要创建一个新的Component的话就需要先获取需要挂载的根组件）后将这个摄像机挂载到根组件xai
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTc3MDA2NzA5NSwyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbLTEzNTk2Mjk3MzUsMjg5NDExNTZdfQ==
 -->
