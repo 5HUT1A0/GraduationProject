@@ -33,8 +33,17 @@ if (UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<U
 
 ### PlayerCharacter
 在这里我实现的功能有：
+
 **1. 初始化第一人称相机**
 
+- PlayerCharacter.h
+```
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCameraComponent* CameraCom;
+```
+创建
+- PlayerCharacter.cpp
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM0Nzc0MTc2MSwyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbMTIyNzMwNTQ3MSwyODk0MTE1Nl19
 -->
