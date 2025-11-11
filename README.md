@@ -70,6 +70,29 @@ APlayerCharacter::APlayerCharacter()
 同时设置Pawn随控制器旋转。
 
 **2.  绑定InputAction到增强输入中**
+
+- PlayerCharacter.h
+
+```
+protected:
+	/*输入动作*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* IA_Move;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* IA_Look;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* IA_PickUp;
+
+private:
+	/*回调函数*/
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
+	void Use(const FInputActionValue& Value);
+```
+
+- PlayerCharacter.cpp
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ1ODU4Njg1MiwyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbMjEzNzk5NTA1MywyODk0MTE1Nl19
 -->
