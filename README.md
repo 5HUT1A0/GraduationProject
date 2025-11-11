@@ -210,12 +210,24 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 实现的功能有：
 **1. 抓取函数（调用于PlayerCharacter的Use回调函数中）**
 
--InteractiveItemsBase.h
+- InteractiveItemsBase.h
+```
+public:	
+	//被抓取逻辑
+	void Grab(USceneComponent* HandComponent);
 ```
 
+- InteractiveItemsBase.cpp
 ```
-
+void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
+{
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	FAttachmentTransformRules AttachRules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
+	AttachToComponent(HandComponent, AttachRules);
+}
+```
+主要就是通过AttachToComponent将Actor附加到设置好的Character场景z
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODc0NTMzMzU0LDY1ODgyMjk2MSwyODk0MT
+eyJoaXN0b3J5IjpbOTQwOTY3NjMyLDY1ODgyMjk2MSwyODk0MT
 E1Nl19
 -->
