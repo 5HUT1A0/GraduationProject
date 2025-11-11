@@ -5,7 +5,7 @@
 
 ## 代码功能实现
 ### **VirtualLabPlayerController**
-我在这里实现的功能有
+我在这里实现的功能有：
 
  **1. 绑定增强输入**
  
@@ -30,6 +30,11 @@ if (UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<U
 }
 ```
 先获取本地玩家的增强输入子系统，再根据传入的上下文引用来绑定到玩家增强输入子系统中。
+
+### PlayerCharacter
+在这里我实现的功能有：
+**1. 初始化第一人称相机**
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ4MTI2NDU0NCwyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbMTM0Nzc0MTc2MSwyODk0MTE1Nl19
 -->
