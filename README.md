@@ -6,7 +6,7 @@
 **VirtualLabPlayerController**
 我在这里实现的功能有
 
-  绑定增强输入
+ **1. 绑定增强输入**
  
  - VirtualLabPlayerController.h
  ```
@@ -16,6 +16,7 @@
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
 ```
 
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTc4NTE1MTQ1NywyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbLTEwMDczMjE2NDYsMjg5NDExNTZdfQ==
 -->
