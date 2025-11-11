@@ -186,7 +186,7 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 
 
 **我在Move回调函数实现的移动逻辑就是：**
-获取摄像机的向前和向右旋转矩阵
+获取摄像机的Yaw轴的旋转矩阵，再通过这个旋转矩阵获取向前和向右方向的向量，最后将这两个
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk2ODE4NDg2MCwyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbLTQwNzg1MDcsMjg5NDExNTZdfQ==
 -->
