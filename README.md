@@ -41,9 +41,26 @@ if (UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<U
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraCom;
 ```
-创建
-- PlayerCharacter.cpp
 
+- PlayerCharacter.cpp
+```
+APlayerCharacter::APlayerCharacter()
+{
+ 	
+	PrimaryActorTick.bCanEverTick = true;
+
+	//创建摄像机并且进行设置
+	USceneComponent* RootComp = GetRootComponent();
+	if (RootComp)
+	{
+		CameraCom = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+		CameraCom->SetupAttachment(RootComp);
+		CameraCom->bUsePawnControlRotation = true;
+	}
+
+}
+```
+在Character构造时候创建摄像机。
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIyNzMwNTQ3MSwyODk0MTE1Nl19
+eyJoaXN0b3J5IjpbLTc3MDA2NzA5NSwyODk0MTE1Nl19
 -->
