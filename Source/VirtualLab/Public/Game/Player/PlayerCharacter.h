@@ -27,10 +27,13 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
+	//组件
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UCameraComponent* CameraCom;
+	TObjectPtr<UCameraComponent> CameraCom;
 
-	/*输入动作*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<USceneComponent> RightHand;
+	//输入动作
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* IA_Move;
 
@@ -41,7 +44,7 @@ protected:
 	UInputAction* IA_PickUp;
 
 private:
-	/*回调函数*/
+	//回调函数
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Use(const FInputActionValue& Value);

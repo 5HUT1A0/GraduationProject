@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "GameFramework/PlayerController.h"
+#include "ActorBase/InteractiveItemsBase.h"
 
 
 APlayerCharacter::APlayerCharacter()
@@ -13,13 +14,18 @@ APlayerCharacter::APlayerCharacter()
  	
 	PrimaryActorTick.bCanEverTick = true;
 
-	//创建摄像机并且进行设置
+	//创建组件并且进行设置
 	USceneComponent* RootComp = GetRootComponent();
 	if (RootComp)
 	{
+		//摄像机组件
 		CameraCom = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 		CameraCom->SetupAttachment(RootComp);
 		CameraCom->bUsePawnControlRotation = true;
+
+		//右手组件
+		RightHand = CreateDefaultSubobject<USceneComponent>(TEXT("RightHand"));
+		RightHand->SetupAttachment(CameraCom);
 	}
 
 }
@@ -105,7 +111,7 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 	
-	bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, StartLocation, EndLocation, ECC_WorldStatic, Params);
+	bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, StartLocation, EndLocation, ECC_GameTraceChannel1, Params);
 	//Debug射线
 	FColor DebugColor = bHit ? FColor::Green : FColor::Red;
 	DrawDebugLine(GetWorld(), StartLocation, EndLocation,DebugColor, false, 2.f, 0, 1.f);
@@ -115,6 +121,10 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 		//Debug
 		DrawDebugPoint(GetWorld(), HitResult.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Hit Actor Name:%s"), *HitResult.GetActor()->GetName()));
+
+		//实现抓取
+		AInteractiveItemsBase* GrabTarget = Cast<AInteractiveItemsBase>(HitResult.GetActor());
+		GrabTarget->Grab(RightHand);
 	}
 	else
 	{

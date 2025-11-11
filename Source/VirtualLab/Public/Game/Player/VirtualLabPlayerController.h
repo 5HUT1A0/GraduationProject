@@ -28,7 +28,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
 
-
 	
 private:
 
