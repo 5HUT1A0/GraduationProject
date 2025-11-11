@@ -7,7 +7,7 @@
 
 
 
-### **VirtualLabPlayerController**
+## **VirtualLabPlayerController**
 我在这里实现的功能有：
 
  **1. 绑定增强输入**
@@ -204,8 +204,9 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 **Use回调函数实现的抓取物品逻辑：**
 获取射线检测碰到的物体对象，之后调用这个物体内部的Grab函数（自定义类）。
 
-### Inter
+### InteractiveItemsBase
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY0NDk1MDcwNSw2NTg4MjI5NjEsMjg5ND
+eyJoaXN0b3J5IjpbMTg5NDU5MDc5Nyw2NTg4MjI5NjEsMjg5ND
 ExNTZdfQ==
 -->
