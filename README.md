@@ -8,7 +8,7 @@
 **目录：**
 - [VirtualLabPlayerController](#VirtualLabPlayerController)
 -  [PlayerCharacter](#PlayerCharacter)
-
+-  [ InteractiveItemsBase](#InteractiveItemsBase)
 
 ## VirtualLabPlayerController
 我在这里实现的功能有：
@@ -231,6 +231,6 @@ void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
 ```
 主要就是通过AttachToComponent将Actor附加到设置好的Character场景组件中
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTUyNjI2NTM0LC0xNjYwMTk1MzcsNjU4OD
-IyOTYxLDI4OTQxMTU2XX0=
+eyJoaXN0b3J5IjpbLTEyNDY4NTU2MDUsLTE2NjAxOTUzNyw2NT
+g4MjI5NjEsMjg5NDExNTZdfQ==
 -->
