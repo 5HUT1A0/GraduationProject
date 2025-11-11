@@ -3,11 +3,11 @@
 ## 项目介绍
 这个项目是作为我的毕业设计和当作一次UE C++学习练手。游戏内容如项目名称而言，就是一个模拟实验操作的游戏，我打算在游戏中设计一个实验，让玩家进行实验步骤操作。如果后续还有时间就再加多一个实验关卡。
 
-## 代码功能实现
+**接下来介绍各个类的功能与实现**
 
 
 
-## **VirtualLabPlayerController**
+## VirtualLabPlayerController
 我在这里实现的功能有：
 
  **1. 绑定增强输入**
@@ -38,7 +38,7 @@ if (UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<U
 
 
 
-### PlayerCharacter
+## PlayerCharacter
 在这里我实现的功能有：
 
 **1. 初始化第一人称相机**
@@ -204,9 +204,13 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 **Use回调函数实现的抓取物品逻辑：**
 获取射线检测碰到的物体对象，之后调用这个物体内部的Grab函数（自定义类）。
 
-### InteractiveItemsBase
+## InteractiveItemsBase
+这里就是可交互物品的基类
+
+实现的功能有：
+1
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTg5NDU5MDc5Nyw2NTg4MjI5NjEsMjg5ND
+eyJoaXN0b3J5IjpbLTU3Mjg1ODY2OCw2NTg4MjI5NjEsMjg5ND
 ExNTZdfQ==
 -->
