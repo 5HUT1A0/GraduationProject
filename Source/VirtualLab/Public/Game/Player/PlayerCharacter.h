@@ -10,6 +10,9 @@
 #include "PlayerCharacter.generated.h"
 
 
+class AInteractiveItemsBase;
+class IGrabbable;
+
 UCLASS()
 class VIRTUALLAB_API APlayerCharacter : public ACharacter
 {
@@ -35,13 +38,19 @@ protected:
 	TObjectPtr<USceneComponent> RightHand;
 	//输入动作
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* IA_Move;
+	TObjectPtr<UInputAction> IA_Move;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* IA_Look;
+	TObjectPtr<UInputAction> IA_Look;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* IA_PickUp;
+	TObjectPtr<UInputAction> IA_RightHand;
+
+
+	IGrabbable* OnHandTarget;
+
+	UPROPERTY()
+	bool bIsPickUp=true;
 
 private:
 	//回调函数
@@ -49,4 +58,13 @@ private:
 	void Look(const FInputActionValue& Value);
 	void Use(const FInputActionValue& Value);
 
+	//功能函数
+	UFUNCTION()
+	void PickUp(const FHitResult& HitResult);
+
+	UFUNCTION()
+	void PutDown(const FHitResult& HitResult);
+
+	UFUNCTION()
+	void LineTrace();
 };

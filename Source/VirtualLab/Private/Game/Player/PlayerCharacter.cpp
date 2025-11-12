@@ -5,7 +5,7 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
-#include "GameFramework/PlayerController.h"
+#include "Interface/Grabbable.h"
 #include "ActorBase/InteractiveItemsBase.h"
 
 
@@ -60,9 +60,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		{
 			EnhanceInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		}
-		if (IA_PickUp)
+		if (IA_RightHand)
 		{
-			EnhanceInputComponent->BindAction(IA_PickUp, ETriggerEvent::Triggered, this, &APlayerCharacter::Use);
+			EnhanceInputComponent->BindAction(IA_RightHand, ETriggerEvent::Triggered, this, &APlayerCharacter::Use);
 		}
 	}
 
@@ -104,31 +104,72 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::Use(const FInputActionValue& Value)
 {
+	LineTrace();
+}
+
+//抓取
+void APlayerCharacter::PickUp(const FHitResult& HitResult)
+{
+	if(IGrabbable*GrabTarget=Cast<IGrabbable>(HitResult.GetActor()))
+	{
+		OnHandTarget = GrabTarget;
+		GrabTarget->Grab(RightHand);
+		bIsPickUp = false;
+	}
+}
+
+//放下
+void APlayerCharacter::PutDown(const FHitResult& HitResult)
+{
+	
+		OnHandTarget->Drop();
+		OnHandTarget->GetGrabbedActor()->SetActorLocation(HitResult.ImpactPoint);
+		bIsPickUp = true;
+	
+}
+
+void APlayerCharacter::LineTrace()
+{
 	FHitResult HitResult;
 	FVector StartLocation = CameraCom->GetComponentLocation();
-	FVector EndLocation = StartLocation +CameraCom->GetForwardVector() * 500.f;
+	FVector EndLocation = StartLocation + CameraCom->GetForwardVector() * 500.f;
 
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
-	
-	bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, StartLocation, EndLocation, ECC_GameTraceChannel1, Params);
+	FCollisionObjectQueryParams ObjectParms;
+	ObjectParms.AddObjectTypesToQuery(ECC_GameTraceChannel1);
+	ObjectParms.AddObjectTypesToQuery(ECC_GameTraceChannel2);
+
+	bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, StartLocation, EndLocation, ObjectParms, Params);
 	//Debug射线
 	FColor DebugColor = bHit ? FColor::Green : FColor::Red;
-	DrawDebugLine(GetWorld(), StartLocation, EndLocation,DebugColor, false, 2.f, 0, 1.f);
+	DrawDebugLine(GetWorld(), StartLocation, EndLocation, DebugColor, false, 2.f, 0, 1.f);
 
 	if (bHit)
 	{
 		//Debug
 		DrawDebugPoint(GetWorld(), HitResult.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Hit Actor Name:%s"), *HitResult.GetActor()->GetName()));
+		UE_LOG(LogTemp, Display, TEXT("HitLocation:%s "), *HitResult.ImpactPoint.ToString());
 
-		//实现抓取
-		AInteractiveItemsBase* GrabTarget = Cast<AInteractiveItemsBase>(HitResult.GetActor());
-		GrabTarget->Grab(RightHand);
+		if(HitResult.GetActor()->GetRootComponent()->GetCollisionObjectType()==ECC_GameTraceChannel1 && bIsPickUp==true)
+		{
+			//调用抓取
+			PickUp(HitResult);
+		}
+		else if (HitResult.GetActor()->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel2 && bIsPickUp==false)
+		{
+			PutDown(HitResult);
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("Hit Nothing")));
+		}
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("Hit Nothing") ));
+
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("Hit Nothing")));
 	}
 }
 

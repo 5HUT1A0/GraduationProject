@@ -4,16 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interface/Grabbable.h"
 #include "InteractiveItemsBase.generated.h"
 
 UCLASS()
-class VIRTUALLAB_API AInteractiveItemsBase : public AActor
+class VIRTUALLAB_API AInteractiveItemsBase : public AActor,public IGrabbable
 {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
+	
 	AInteractiveItemsBase();
+
+
 
 protected:
 	
@@ -24,7 +27,15 @@ protected:
 
 
 
+
+
 public:	
-	//被抓取逻辑
-	void Grab(USceneComponent* HandComponent);
+	//抓取接口
+	virtual void Grab(USceneComponent* HandComponent) override;
+   
+	//放下接口
+	virtual void Drop()override;
+
+	//返回被抓取对象接口
+	virtual AActor* GetGrabbedActor()override { return this; }
 };

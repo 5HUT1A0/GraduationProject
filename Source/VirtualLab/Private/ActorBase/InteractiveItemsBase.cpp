@@ -4,7 +4,7 @@
 #include "ActorBase/InteractiveItemsBase.h"
 #include "Components/CapsuleComponent.h"
 
-// Sets default values
+
 AInteractiveItemsBase::AInteractiveItemsBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -19,18 +19,28 @@ AInteractiveItemsBase::AInteractiveItemsBase()
 	Mesh->SetCollisionResponseToAllChannels(ECR_Block);
 }
 
-// Called when the game starts or when spawned
 void AInteractiveItemsBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+
 }
+
+//抓取逻辑
+
 
 void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
 {
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	FAttachmentTransformRules AttachRules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
 	AttachToComponent(HandComponent, AttachRules);
+}
+
+//放下逻辑
+void AInteractiveItemsBase::Drop()
+{
+	Mesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
 
