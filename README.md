@@ -230,7 +230,11 @@ void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
 }
 ```
 主要就是通过AttachToComponent将Actor附加到设置好的Character场景组件中
+
+### 优化：
+1. 将碰撞通道设置为DataAsset，避免硬编码。
+2. 将抓取功能解耦
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyNDY4NTU2MDUsLTE2NjAxOTUzNyw2NT
-g4MjI5NjEsMjg5NDExNTZdfQ==
+eyJoaXN0b3J5IjpbLTE5MzIyNjE0MzksLTEyNDY4NTU2MDUsLT
+E2NjAxOTUzNyw2NTg4MjI5NjEsMjg5NDExNTZdfQ==
 -->
