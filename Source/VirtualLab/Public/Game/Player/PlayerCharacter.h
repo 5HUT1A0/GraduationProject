@@ -10,6 +10,9 @@
 #include "PlayerCharacter.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGrabEvent);
+
+
 class AInteractiveItemsBase;
 class IGrabbable;
 
@@ -23,6 +26,12 @@ public:
 	APlayerCharacter();
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnGrabEvent OnGrab;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnGrabEvent OnRelease;
 
 protected:
 	
@@ -52,6 +61,7 @@ protected:
 	UPROPERTY()
 	bool bIsPickUp=true;
 
+
 private:
 	//»Øµ÷º¯Êý
 	void Move(const FInputActionValue& Value);
@@ -66,5 +76,5 @@ private:
 	void PutDown(const FHitResult& HitResult);
 
 	UFUNCTION()
-	void LineTrace();
+	bool LineTrace(FHitResult&Hit);
 };

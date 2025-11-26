@@ -4,6 +4,7 @@
 #include "Game/Player/VirtualLabPlayerController.h"
 #include "InputMappingContext.h"
 #include"EnhancedInputSubsystems.h"
+#include"UI/HUD/VirtualLabHUD.h"
 #include"GameFramework/Pawn.h"
 
 void AVirtualLabPlayerController::BeginPlay()
@@ -18,4 +19,6 @@ void AVirtualLabPlayerController::BeginPlay()
 			SubSystem->AddMappingContext(InputMapping.LoadSynchronous(), 0);
 		}
 	}
+
+
 }

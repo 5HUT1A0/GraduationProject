@@ -104,7 +104,26 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::Use(const FInputActionValue& Value)
 {
-	LineTrace();
+	FHitResult Hit;
+	if (LineTrace(Hit))
+	{
+		AActor* HitActor = Hit.GetActor();
+		if (!HitActor)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Hit but actor == nullptr"));
+			return;
+		}
+
+		if (HitActor->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel1 && bIsPickUp)
+		{
+			PickUp(Hit);
+		}
+		else if (HitActor->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel2 && !bIsPickUp)
+		{
+			PutDown(Hit);
+		}
+	}
+
 }
 
 //抓取
@@ -114,6 +133,7 @@ void APlayerCharacter::PickUp(const FHitResult& HitResult)
 	{
 		OnHandTarget = GrabTarget;
 		GrabTarget->Grab(RightHand);
+		OnGrab.Broadcast();
 		bIsPickUp = false;
 	}
 }
@@ -124,13 +144,15 @@ void APlayerCharacter::PutDown(const FHitResult& HitResult)
 	
 		OnHandTarget->Drop();
 		OnHandTarget->GetGrabbedActor()->SetActorLocation(HitResult.ImpactPoint);
+		OnRelease.Broadcast();
 		bIsPickUp = true;
 	
 }
 
-void APlayerCharacter::LineTrace()
+
+//射线检测（只负责检测）
+bool APlayerCharacter::LineTrace(FHitResult& Hit)
 {
-	FHitResult HitResult;
 	FVector StartLocation = CameraCom->GetComponentLocation();
 	FVector EndLocation = StartLocation + CameraCom->GetForwardVector() * 500.f;
 
@@ -140,37 +162,20 @@ void APlayerCharacter::LineTrace()
 	ObjectParms.AddObjectTypesToQuery(ECC_GameTraceChannel1);
 	ObjectParms.AddObjectTypesToQuery(ECC_GameTraceChannel2);
 
-	bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, StartLocation, EndLocation, ObjectParms, Params);
+	bool bHit = GetWorld()->LineTraceSingleByObjectType(Hit, StartLocation, EndLocation, ObjectParms, Params);
 	//Debug射线
 	FColor DebugColor = bHit ? FColor::Green : FColor::Red;
 	DrawDebugLine(GetWorld(), StartLocation, EndLocation, DebugColor, false, 2.f, 0, 1.f);
-
-	if (bHit)
-	{
-		//Debug
-		DrawDebugPoint(GetWorld(), HitResult.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Hit Actor Name:%s"), *HitResult.GetActor()->GetName()));
-		UE_LOG(LogTemp, Display, TEXT("HitLocation:%s "), *HitResult.ImpactPoint.ToString());
-
-		if(HitResult.GetActor()->GetRootComponent()->GetCollisionObjectType()==ECC_GameTraceChannel1 && bIsPickUp==true)
+		//DebugPoint
+		DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
+		if(Hit.GetActor())
 		{
-			//调用抓取
-			PickUp(HitResult);
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Hit Actor Name:%s"), *Hit.GetActor()->GetName()));
 		}
-		else if (HitResult.GetActor()->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel2 && bIsPickUp==false)
-		{
-			PutDown(HitResult);
-		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("Hit Nothing")));
-		}
-	}
-	else
-	{
+		//UE_LOG(LogTemp, Display, TEXT("HitLocation:%s "), *Hit.ImpactPoint.ToString());
 
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("Hit Nothing")));
-	}
+		return bHit;
+
 }
 
 
