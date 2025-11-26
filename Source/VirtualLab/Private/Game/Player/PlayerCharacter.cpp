@@ -12,7 +12,7 @@
 APlayerCharacter::APlayerCharacter()
 {
  	
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	//创建组件并且进行设置
 	USceneComponent* RootComp = GetRootComponent();
@@ -41,7 +41,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	
+	LineTrace(Hit);
 }
 
 
@@ -104,7 +104,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::Use(const FInputActionValue& Value)
 {
-	FHitResult Hit;
+
 	if (LineTrace(Hit))
 	{
 		AActor* HitActor = Hit.GetActor();
@@ -117,10 +117,12 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 		if (HitActor->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel1 && bIsPickUp)
 		{
 			PickUp(Hit);
+			SetActorTickEnabled(true);
 		}
 		else if (HitActor->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel2 && !bIsPickUp)
 		{
 			PutDown(Hit);
+			SetActorTickEnabled(false);
 		}
 	}
 

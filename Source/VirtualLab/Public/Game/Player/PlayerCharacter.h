@@ -77,4 +77,7 @@ private:
 
 	UFUNCTION()
 	bool LineTrace(FHitResult&Hit);
+
+	UPROPERTY()
+	FHitResult Hit;
 };
