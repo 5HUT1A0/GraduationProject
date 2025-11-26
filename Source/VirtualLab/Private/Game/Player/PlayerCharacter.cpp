@@ -12,7 +12,7 @@
 APlayerCharacter::APlayerCharacter()
 {
  	
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	//创建组件并且进行设置
 	USceneComponent* RootComp = GetRootComponent();
@@ -34,6 +34,7 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SetActorTickEnabled(false);
 }
 
 
@@ -153,7 +154,7 @@ void APlayerCharacter::PutDown(const FHitResult& HitResult)
 
 
 //射线检测（只负责检测）
-bool APlayerCharacter::LineTrace(FHitResult& Hit)
+bool APlayerCharacter::LineTrace(FHitResult& OutHit)
 {
 	FVector StartLocation = CameraCom->GetComponentLocation();
 	FVector EndLocation = StartLocation + CameraCom->GetForwardVector() * 500.f;
@@ -164,16 +165,16 @@ bool APlayerCharacter::LineTrace(FHitResult& Hit)
 	ObjectParms.AddObjectTypesToQuery(ECC_GameTraceChannel1);
 	ObjectParms.AddObjectTypesToQuery(ECC_GameTraceChannel2);
 
-	bool bHit = GetWorld()->LineTraceSingleByObjectType(Hit, StartLocation, EndLocation, ObjectParms, Params);
+	bool bHit = GetWorld()->LineTraceSingleByObjectType(OutHit, StartLocation, EndLocation, ObjectParms, Params);
 	//Debug射线
 	FColor DebugColor = bHit ? FColor::Green : FColor::Red;
 	DrawDebugLine(GetWorld(), StartLocation, EndLocation, DebugColor, false, 2.f, 0, 1.f);
 		//DebugPoint
-		DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
-		if(Hit.GetActor())
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Hit Actor Name:%s"), *Hit.GetActor()->GetName()));
-		}
+		DrawDebugPoint(GetWorld(), OutHit.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
+		//if(OutHit.GetActor())
+		//{
+		//	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Hit Actor Name:%s"), *OutHit.GetActor()->GetName()));
+		//}
 		//UE_LOG(LogTemp, Display, TEXT("HitLocation:%s "), *Hit.ImpactPoint.ToString());
 
 		return bHit;

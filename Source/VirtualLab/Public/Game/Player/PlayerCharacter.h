@@ -33,6 +33,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGrabEvent OnRelease;
 
+	UPROPERTY()
+	FHitResult Hit;
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -76,8 +79,7 @@ private:
 	void PutDown(const FHitResult& HitResult);
 
 	UFUNCTION()
-	bool LineTrace(FHitResult&Hit);
+	bool LineTrace(FHitResult& OutHit);
 
-	UPROPERTY()
-	FHitResult Hit;
+
 };
