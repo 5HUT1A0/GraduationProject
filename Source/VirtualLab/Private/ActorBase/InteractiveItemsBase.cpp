@@ -26,9 +26,40 @@ void AInteractiveItemsBase::BeginPlay()
 
 }
 
+
+
+//Æ¥Åä±êÇ©
+bool AInteractiveItemsBase::MatchInteractiveTags(const AInteractiveItemsBase* HandTarget,const AInteractiveItemsBase* OutTarget)
+{
+	if (!HandTarget || !OutTarget)
+	{
+		if(!HandTarget)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black, FString::Printf(TEXT("NUllHandTarget")));
+		}
+		if (!OutTarget)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black, FString::Printf(TEXT("NullOutTarget")));
+		}
+		return false;
+	}
+
+	if (OutTarget->AllowedTypes.Num() == 0)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black, FString::Printf(TEXT("TempArray")));
+		return false;
+	}
+	for (int32 i = 0; i < OutTarget->AllowedTypes.Num(); i++)
+	{
+		if (HandTarget->SelfType == OutTarget->AllowedTypes[i])
+		{
+			return true;
+		}	
+	}
+	return false;
+}
+
 //×¥È¡Âß¼­
-
-
 void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
 {
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);

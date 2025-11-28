@@ -58,8 +58,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_RightHand;
 
-
-	IGrabbable* OnHandTarget;
+	UPROPERTY()
+	TObjectPtr<IGrabbable> OnHandTarget;
 
 	UPROPERTY()
 	bool bIsPickUp=true;
@@ -80,6 +80,16 @@ private:
 
 	UFUNCTION()
 	bool LineTrace(FHitResult& OutHit);
+
+
+
+	//可与手中物品操作的对象
+	UPROPERTY()
+	TObjectPtr<AInteractiveItemsBase> InteractiveTarget;
+
+	//可与手中物品操作的对象
+	UPROPERTY()
+	TObjectPtr<AInteractiveItemsBase> HandTarget;
 
 
 };

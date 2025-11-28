@@ -43,6 +43,14 @@ void APlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	LineTrace(Hit);
+	InteractiveTarget = Cast<AInteractiveItemsBase>(Hit.GetActor());
+	if (InteractiveTarget)
+	{
+		if (InteractiveTarget->MatchInteractiveTags(HandTarget, InteractiveTarget))
+		{
+			UE_LOG(LogTemp, Display, TEXT("MATCH! "));
+		}
+	}
 }
 
 
@@ -134,6 +142,7 @@ void APlayerCharacter::PickUp(const FHitResult& HitResult)
 {
 	if(IGrabbable*GrabTarget=Cast<IGrabbable>(HitResult.GetActor()))
 	{
+		HandTarget = Cast<AInteractiveItemsBase>(HitResult.GetActor());
 		OnHandTarget = GrabTarget;
 		GrabTarget->Grab(RightHand);
 		OnGrab.Broadcast();
@@ -148,6 +157,7 @@ void APlayerCharacter::PutDown(const FHitResult& HitResult)
 		OnHandTarget->Drop();
 		OnHandTarget->GetGrabbedActor()->SetActorLocation(HitResult.ImpactPoint);
 		OnRelease.Broadcast();
+		HandTarget = nullptr;
 		bIsPickUp = true;
 	
 }
@@ -180,6 +190,7 @@ bool APlayerCharacter::LineTrace(FHitResult& OutHit)
 		return bHit;
 
 }
+
 
 
 

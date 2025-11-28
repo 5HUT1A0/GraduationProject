@@ -31,6 +31,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnInteractState OnInteractStateChanged;
 
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetInteractState(EInteractState NewState);
