@@ -25,7 +25,12 @@ public:
 	
 	AInteractiveItemsBase();
 
+	//可以物体之间交互
+	UPROPERTY()
+	bool bCanInteractive=false;
 
+	UPROPERTY()
+	bool bCanLineTrace = false;
 
 protected:
 	
@@ -33,6 +38,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Component")
 	TObjectPtr<UStaticMeshComponent> Mesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	TObjectPtr<USceneComponent>JointPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	EInteractiveObjectType SelfType;
@@ -56,4 +64,7 @@ public:
 	
 	UFUNCTION()
 	bool MatchInteractiveTags(const AInteractiveItemsBase* HandTarget,const AInteractiveItemsBase* OutTarget);
+
+	UFUNCTION()
+	bool AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget);
 };

@@ -58,6 +58,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_RightHand;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction>IA_Interactive;
+
 	UPROPERTY()
 	TObjectPtr<IGrabbable> OnHandTarget;
 
@@ -69,7 +72,7 @@ private:
 	//回调函数
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
-	void Use(const FInputActionValue& Value);
+	void PickAndDown();
 
 	//功能函数
 	UFUNCTION()
@@ -77,6 +80,9 @@ private:
 
 	UFUNCTION()
 	void PutDown(const FHitResult& HitResult);
+
+	UFUNCTION()
+	void Attach();
 
 	UFUNCTION()
 	bool LineTrace(FHitResult& OutHit);
@@ -87,7 +93,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<AInteractiveItemsBase> InteractiveTarget;
 
-	//可与手中物品操作的对象
+	//手中对象
 	UPROPERTY()
 	TObjectPtr<AInteractiveItemsBase> HandTarget;
 

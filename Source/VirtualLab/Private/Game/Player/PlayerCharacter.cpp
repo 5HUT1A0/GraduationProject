@@ -44,11 +44,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	LineTrace(Hit);
 	InteractiveTarget = Cast<AInteractiveItemsBase>(Hit.GetActor());
-	if (InteractiveTarget)
+	if (InteractiveTarget&&InteractiveTarget->bCanLineTrace)
 	{
 		if (InteractiveTarget->MatchInteractiveTags(HandTarget, InteractiveTarget))
 		{
-			UE_LOG(LogTemp, Display, TEXT("MATCH! "));
+			HandTarget->bCanInteractive = true;
+			
 		}
 	}
 }
@@ -71,7 +72,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		}
 		if (IA_RightHand)
 		{
-			EnhanceInputComponent->BindAction(IA_RightHand, ETriggerEvent::Triggered, this, &APlayerCharacter::Use);
+			EnhanceInputComponent->BindAction(IA_RightHand, ETriggerEvent::Triggered, this, &APlayerCharacter::PickAndDown);
+		}
+		if (IA_Interactive)
+		{
+			EnhanceInputComponent->BindAction(IA_Interactive, ETriggerEvent::Triggered, this, &APlayerCharacter::Attach);
 		}
 	}
 
@@ -79,7 +84,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 }
 
 
-//动作回调函数
+//移动逻辑
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D InputValue = Value.Get<FVector2D>();
@@ -98,6 +103,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
+//视角逻辑
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
 	FVector2D InputValue = Value.Get<FVector2D>();
@@ -111,7 +117,8 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
     }
 }
 
-void APlayerCharacter::Use(const FInputActionValue& Value)
+//拿起放下的回调函数
+void APlayerCharacter::PickAndDown()
 {
 
 	if (LineTrace(Hit))
@@ -136,6 +143,8 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 	}
 
 }
+
+
 
 //抓取
 void APlayerCharacter::PickUp(const FHitResult& HitResult)
@@ -162,6 +171,21 @@ void APlayerCharacter::PutDown(const FHitResult& HitResult)
 	
 }
 
+//与桌子物体交互逻辑
+void APlayerCharacter::Attach()
+{
+	UE_LOG(LogTemp, Display, TEXT("PressedF"));
+	if (HandTarget&& HandTarget->AttachToPoint(HandTarget, InteractiveTarget))
+	{
+		SetActorTickEnabled(false);
+		bIsPickUp = true;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("NoHandTarget "));
+	}
+}
+
 
 //射线检测（只负责检测）
 bool APlayerCharacter::LineTrace(FHitResult& OutHit)
@@ -180,11 +204,11 @@ bool APlayerCharacter::LineTrace(FHitResult& OutHit)
 	FColor DebugColor = bHit ? FColor::Green : FColor::Red;
 	DrawDebugLine(GetWorld(), StartLocation, EndLocation, DebugColor, false, 2.f, 0, 1.f);
 		//DebugPoint
-		DrawDebugPoint(GetWorld(), OutHit.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
-		//if(OutHit.GetActor())
-		//{
-		//	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Hit Actor Name:%s"), *OutHit.GetActor()->GetName()));
-		//}
+	/*	DrawDebugPoint(GetWorld(), OutHit.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
+		if(OutHit.GetActor())
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, FString::Printf(TEXT("Hit Actor Name:%s"), *OutHit.GetActor()->GetName()));
+		}*/
 		//UE_LOG(LogTemp, Display, TEXT("HitLocation:%s "), *Hit.ImpactPoint.ToString());
 
 		return bHit;

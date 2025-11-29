@@ -13,6 +13,9 @@ AInteractiveItemsBase::AInteractiveItemsBase()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = Mesh;
 
+	JointPoint = CreateDefaultSubobject<USceneComponent>(TEXT("JointPoint"));
+	JointPoint->SetupAttachment(RootComponent);
+
 	//设置网格体碰撞
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	Mesh->SetCollisionObjectType(ECC_GameTraceChannel1);
@@ -49,12 +52,31 @@ bool AInteractiveItemsBase::MatchInteractiveTags(const AInteractiveItemsBase* Ha
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black, FString::Printf(TEXT("TempArray")));
 		return false;
 	}
-	for (int32 i = 0; i < OutTarget->AllowedTypes.Num(); i++)
+	for (auto AllowedType:AllowedTypes)
 	{
-		if (HandTarget->SelfType == OutTarget->AllowedTypes[i])
+		if (HandTarget->SelfType == AllowedType)
 		{
 			return true;
 		}	
+	}
+	return false;
+}
+
+//结合逻辑
+bool AInteractiveItemsBase::AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget)
+{
+	if(OutTarget&&OutTarget->bCanInteractive)
+	{
+		HandTarget->Mesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+
+		//不焊接物理
+		FAttachmentTransformRules Rules(EAttachmentRule::KeepRelative,false);
+		AttachToComponent(OutTarget->JointPoint, Rules);
+		
+		Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		
+		bCanInteractive = false;
+		return true;
 	}
 	return false;
 }
@@ -65,6 +87,8 @@ void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	FAttachmentTransformRules AttachRules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
 	AttachToComponent(HandComponent, AttachRules);
+	bCanLineTrace = false;
+	bCanInteractive = true;
 }
 
 //放下逻辑
@@ -72,6 +96,7 @@ void AInteractiveItemsBase::Drop()
 {
 	Mesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	bCanLineTrace = true;
 }
 
 
