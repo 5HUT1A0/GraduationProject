@@ -64,6 +64,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<IGrabbable> OnHandTarget;
 
+
 	UPROPERTY()
 	bool bIsPickUp=true;
 
@@ -82,7 +83,7 @@ private:
 	void PutDown(const FHitResult& HitResult);
 
 	UFUNCTION()
-	void Attach();
+	void Interaction();
 
 	UFUNCTION()
 	bool LineTrace(FHitResult& OutHit);

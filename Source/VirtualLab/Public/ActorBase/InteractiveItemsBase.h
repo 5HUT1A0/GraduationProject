@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interface/Grabbable.h"
+#include"Interface/Interactive.h"
 #include "InteractiveItemsBase.generated.h"
 
 
@@ -17,7 +18,7 @@ enum class EInteractiveObjectType:uint8
 };
 
 UCLASS()
-class VIRTUALLAB_API AInteractiveItemsBase : public AActor,public IGrabbable
+class VIRTUALLAB_API AInteractiveItemsBase : public AActor,public IGrabbable,public IInteractive
 {
 	GENERATED_BODY()
 	
@@ -62,9 +63,7 @@ public:
 	//返回被抓取对象接口
 	virtual AActor* GetGrabbedActor()override { return this; }
 	
-	UFUNCTION()
-	bool MatchInteractiveTags(const AInteractiveItemsBase* HandTarget,const AInteractiveItemsBase* OutTarget);
+	virtual bool MatchInteractiveTags(const AInteractiveItemsBase* HandTarget,const AInteractiveItemsBase* OutTarget) override;
 
-	UFUNCTION()
-	bool AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget);
+	virtual bool AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget) override;
 };

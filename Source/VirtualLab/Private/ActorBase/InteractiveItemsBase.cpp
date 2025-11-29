@@ -46,18 +46,16 @@ bool AInteractiveItemsBase::MatchInteractiveTags(const AInteractiveItemsBase* Ha
 		}
 		return false;
 	}
-
-	if (OutTarget->AllowedTypes.Num() == 0)
+	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Black, FString::Printf(TEXT("TempArray")));
-		return false;
-	}
-	for (auto AllowedType:AllowedTypes)
-	{
-		if (HandTarget->SelfType == AllowedType)
+		for (auto AllowedType : AllowedTypes)
 		{
-			return true;
-		}	
+			if (HandTarget->SelfType == AllowedType)
+			{
+				UE_LOG(LogTemp,Display,TEXT("Match!"))
+				return true;
+			}
+		}
 	}
 	return false;
 }
@@ -65,7 +63,7 @@ bool AInteractiveItemsBase::MatchInteractiveTags(const AInteractiveItemsBase* Ha
 //结合逻辑
 bool AInteractiveItemsBase::AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget)
 {
-	if(OutTarget&&OutTarget->bCanInteractive)
+	if(OutTarget&&HandTarget->bCanInteractive)
 	{
 		HandTarget->Mesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 
@@ -88,7 +86,7 @@ void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
 	FAttachmentTransformRules AttachRules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
 	AttachToComponent(HandComponent, AttachRules);
 	bCanLineTrace = false;
-	bCanInteractive = true;
+	
 }
 
 //放下逻辑
@@ -97,7 +95,9 @@ void AInteractiveItemsBase::Drop()
 	Mesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	bCanLineTrace = true;
+	bCanInteractive = true;
 }
 
 
 
+/*这些接口功能可以到时候到这个类的子类里各自重写，现在写的只是默认状态下的功能，之后拓展详细功能*/

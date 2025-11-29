@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "Interface/Grabbable.h"
+#include"Interface/Interactive.h"
 #include "ActorBase/InteractiveItemsBase.h"
 
 
@@ -46,9 +47,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 	InteractiveTarget = Cast<AInteractiveItemsBase>(Hit.GetActor());
 	if (InteractiveTarget&&InteractiveTarget->bCanLineTrace)
 	{
-		if (InteractiveTarget->MatchInteractiveTags(HandTarget, InteractiveTarget))
+		if (IInteractive* IInteractiveItem=Cast<IInteractive>(InteractiveTarget))
 		{
-			HandTarget->bCanInteractive = true;
+			
+			HandTarget->bCanInteractive = IInteractiveItem->MatchInteractiveTags(HandTarget, InteractiveTarget);
 			
 		}
 	}
@@ -76,7 +78,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		}
 		if (IA_Interactive)
 		{
-			EnhanceInputComponent->BindAction(IA_Interactive, ETriggerEvent::Triggered, this, &APlayerCharacter::Attach);
+			EnhanceInputComponent->BindAction(IA_Interactive, ETriggerEvent::Triggered, this, &APlayerCharacter::Interaction);
 		}
 	}
 
@@ -172,10 +174,11 @@ void APlayerCharacter::PutDown(const FHitResult& HitResult)
 }
 
 //与桌子物体交互逻辑
-void APlayerCharacter::Attach()
+void APlayerCharacter::Interaction()
 {
 	UE_LOG(LogTemp, Display, TEXT("PressedF"));
-	if (HandTarget&& HandTarget->AttachToPoint(HandTarget, InteractiveTarget))
+	IInteractive* IHandTarget = Cast<IInteractive>(HandTarget);
+	if (IHandTarget&& IHandTarget->AttachToPoint(HandTarget, InteractiveTarget))
 	{
 		SetActorTickEnabled(false);
 		bIsPickUp = true;
