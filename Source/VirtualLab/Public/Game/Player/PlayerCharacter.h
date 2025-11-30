@@ -11,6 +11,7 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGrabEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractiveChanged, bool, bNewState);
 
 
 class AInteractiveItemsBase;
@@ -35,6 +36,11 @@ public:
 
 	UPROPERTY()
 	FHitResult Hit;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnInteractiveChanged OnInteractiveChanged;
+
+
 
 protected:
 	
@@ -87,6 +93,10 @@ private:
 
 	UFUNCTION()
 	bool LineTrace(FHitResult& OutHit);
+
+	UPROPERTY()
+	bool bCanInteractivceLastFrame = false;
+
 
 
 

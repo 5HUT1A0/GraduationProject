@@ -12,6 +12,8 @@ void UOverlapWidgetController::SetInteractState(EInteractState NewState)
 	OnInteractStateChanged.Broadcast(NewState);
 	UE_LOG(LogTemp, Display, TEXT("%s "), *StaticEnum<EInteractState>()->GetNameByValue((int64)NewState).ToString());
 }
+
+
 	
 
 void UOverlapWidgetController::BroadcastInitialValues()
@@ -21,8 +23,8 @@ void UOverlapWidgetController::BroadcastInitialValues()
 
 void UOverlapWidgetController::BindCallBackToDependencies()
 {
-	AVirtualLabPlayerController* PC = Cast<AVirtualLabPlayerController>(GetOuter());
-	if (APlayerCharacter* PlayerCharacter = Cast <APlayerCharacter>(PC->GetPawn()))
+	AVirtualLabPlayerController * PC = Cast<AVirtualLabPlayerController>(GetOuter());
+	if (APlayerCharacter *PlayerCharacter = Cast <APlayerCharacter>(PC->GetPawn()))
 	{
 		PlayerCharacter->OnGrab.AddDynamic(this, &UOverlapWidgetController::OnCharacterGrab);
 		PlayerCharacter->OnRelease.AddDynamic(this, &UOverlapWidgetController::OnCharacterRelease);

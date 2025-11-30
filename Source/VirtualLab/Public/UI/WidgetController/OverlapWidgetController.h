@@ -9,6 +9,8 @@
 /**
  * 
  */
+
+
 UENUM(BlueprintType)
 enum class EInteractState :uint8
 {
@@ -36,6 +38,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetInteractState(EInteractState NewState);
 
+
+
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallBackToDependencies() override;
 
@@ -45,4 +49,5 @@ private:
 
 	UFUNCTION()
 	void OnCharacterRelease();
+
 };

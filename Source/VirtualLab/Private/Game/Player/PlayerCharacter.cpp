@@ -8,6 +8,8 @@
 #include "Interface/Grabbable.h"
 #include"Interface/Interactive.h"
 #include "ActorBase/InteractiveItemsBase.h"
+#include"Blueprint/UserWidget.h"
+
 
 
 APlayerCharacter::APlayerCharacter()
@@ -31,6 +33,8 @@ APlayerCharacter::APlayerCharacter()
 
 }
 
+
+
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -51,8 +55,14 @@ void APlayerCharacter::Tick(float DeltaTime)
 		{
 			
 			HandTarget->bCanInteractive = IInteractiveItem->MatchInteractiveTags(HandTarget, InteractiveTarget);
-			
+
 		}
+	}
+	if (IsValid(InteractiveTarget) != bCanInteractivceLastFrame)
+	{
+
+		bCanInteractivceLastFrame = IsValid(InteractiveTarget);
+		OnInteractiveChanged.Broadcast(bCanInteractivceLastFrame);
 	}
 }
 
@@ -181,6 +191,7 @@ void APlayerCharacter::Interaction()
 	if (IHandTarget&& IHandTarget->AttachToPoint(HandTarget, InteractiveTarget))
 	{
 		SetActorTickEnabled(false);
+		OnInteractiveChanged.Broadcast(false);
 		bIsPickUp = true;
 	}
 	else
@@ -217,6 +228,9 @@ bool APlayerCharacter::LineTrace(FHitResult& OutHit)
 		return bHit;
 
 }
+
+
+
 
 
 

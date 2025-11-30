@@ -22,11 +22,11 @@ AInteractiveItemsBase::AInteractiveItemsBase()
 	Mesh->SetCollisionResponseToAllChannels(ECR_Block);
 }
 
+
 void AInteractiveItemsBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
-
 }
 
 
@@ -52,7 +52,7 @@ bool AInteractiveItemsBase::MatchInteractiveTags(const AInteractiveItemsBase* Ha
 		{
 			if (HandTarget->SelfType == AllowedType)
 			{
-				UE_LOG(LogTemp,Display,TEXT("Match!"))
+				//UE_LOG(LogTemp,Display,TEXT("Match!"))
 				return true;
 			}
 		}

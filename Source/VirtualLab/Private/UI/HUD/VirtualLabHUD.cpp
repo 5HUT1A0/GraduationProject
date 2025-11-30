@@ -41,7 +41,7 @@ void AVirtualLabHUD::InitUserWidget()
 	//绑定玩家控制器
 	UOverlapWidgetController* OWController = GetOverlapWidgetController();
 	OverlapWidget->SetWidgetController(OWController);
-	UE_LOG(LogTemp, Warning, TEXT("Bind To Controller Ptr in HUD: %p"), OWController);
+	//UE_LOG(LogTemp, Warning, TEXT("Bind To Controller Ptr in HUD: %p"), OWController);
 	OverlapWidgetController->BroadcastInitialValues();
 	
 	//添加到视口

@@ -8,13 +8,13 @@ void UVirtualLabUserWidget::SetWidgetController(UObject* InWidgetController)
 {
 	WidgetController = InWidgetController;
 	UOverlapWidgetController* OWController = Cast<UOverlapWidgetController>(WidgetController);
-	UE_LOG(LogTemp, Warning, TEXT("Bind To Controller Ptr in Widget: %p"), OWController);
+	//UE_LOG(LogTemp, Warning, TEXT("Bind To Controller Ptr in Widget: %p"), OWController);
 	OWController->OnInteractStateChanged.AddDynamic(this, &UVirtualLabUserWidget::HandleInteractStateChanged);
 }
 
 void UVirtualLabUserWidget::HandleInteractStateChanged(EInteractState NewState)
 {
-	UE_LOG(LogTemp, Display, TEXT("StartChange "));
+	//UE_LOG(LogTemp, Display, TEXT("StartChange "));
 	switch (NewState)
 	{
 	case EInteractState::None:

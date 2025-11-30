@@ -19,5 +19,8 @@ public:
     FText TipsName;
 
     UPROPERTY(EditAnywhere,BlueprintReadWrite)
-    TSoftObjectPtr<UTexture2D>Icon;
+    TObjectPtr<UTexture2D>Icon;
+
+    UPROPERTY(EditAnywhere,BlueprintReadWrite)
+    bool InitInfo;
 };

@@ -26,10 +26,12 @@ public:
 	
 	AInteractiveItemsBase();
 
-	//可以物体之间交互
+
+	//是否物体之间交互
 	UPROPERTY()
 	bool bCanInteractive=false;
 
+	//是否启用射线检测
 	UPROPERTY()
 	bool bCanLineTrace = false;
 
@@ -63,7 +65,9 @@ public:
 	//返回被抓取对象接口
 	virtual AActor* GetGrabbedActor()override { return this; }
 	
+	//匹配可交互标签接口
 	virtual bool MatchInteractiveTags(const AInteractiveItemsBase* HandTarget,const AInteractiveItemsBase* OutTarget) override;
 
+	//吸附到点接口
 	virtual bool AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget) override;
 };
