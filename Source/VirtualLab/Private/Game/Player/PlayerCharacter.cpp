@@ -216,7 +216,7 @@ bool APlayerCharacter::LineTrace(FHitResult& OutHit)
 	bool bHit = GetWorld()->LineTraceSingleByObjectType(OutHit, StartLocation, EndLocation, ObjectParms, Params);
 	//Debug…‰œﬂ
 	FColor DebugColor = bHit ? FColor::Green : FColor::Red;
-	DrawDebugLine(GetWorld(), StartLocation, EndLocation, DebugColor, false, 2.f, 0, 1.f);
+	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, DebugColor, false, 2.f, 0, 1.f);
 		//DebugPoint
 	/*	DrawDebugPoint(GetWorld(), OutHit.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
 		if(OutHit.GetActor())

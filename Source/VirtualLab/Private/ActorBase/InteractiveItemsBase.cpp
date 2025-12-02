@@ -27,6 +27,7 @@ void AInteractiveItemsBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	
 }
 
 
@@ -69,6 +70,7 @@ bool AInteractiveItemsBase::AttachToPoint(const AInteractiveItemsBase* HandTarge
 
 		//不焊接物理
 		FAttachmentTransformRules Rules(EAttachmentRule::KeepRelative,false);
+		Mesh->SetAbsolute(false, false, true);
 		AttachToComponent(OutTarget->JointPoint, Rules);
 		
 		Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
