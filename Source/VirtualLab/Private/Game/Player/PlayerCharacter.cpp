@@ -8,6 +8,7 @@
 #include "Interface/Grabbable.h"
 #include"Interface/Interactive.h"
 #include "ActorBase/InteractiveItemsBase.h"
+#include"Game/VirtualLabGameInstanceSubsystem.h"
 #include"Blueprint/UserWidget.h"
 
 
@@ -35,6 +36,11 @@ APlayerCharacter::APlayerCharacter()
 
 
 
+FText APlayerCharacter::GetUIName()
+{
+	return UIName;
+}
+
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -53,17 +59,30 @@ void APlayerCharacter::Tick(float DeltaTime)
 	{
 		if (IInteractive* IInteractiveItem=Cast<IInteractive>(InteractiveTarget))
 		{
-			
+			//用于结合逻辑
 			HandTarget->bCanInteractive = IInteractiveItem->MatchInteractiveTags(HandTarget, InteractiveTarget);
 
 		}
 	}
-	if (IsValid(InteractiveTarget) != bCanInteractivceLastFrame)
+	else
 	{
-
-		bCanInteractivceLastFrame = IsValid(InteractiveTarget);
-		OnInteractiveChanged.Broadcast(bCanInteractivceLastFrame);
+		InteractiveTarget = nullptr;
 	}
+			if(IsValid(InteractiveTarget)!=bCanInteractivceLastFrame)
+			{
+				if(IsValid(InteractiveTarget))
+				{
+					auto* Sub = GetGameInstance()->GetSubsystem<UVirtualLabGameInstanceSubsystem>();
+					FText OutUIName = Sub->QueryUI(HandTarget->SelfType, InteractiveTarget->SelfType);
+					UIName = OutUIName;
+					OnInteractiveChanged.Broadcast(OutUIName);
+				}
+				else
+				{
+					OnInteractiveChanged.Broadcast(FText::FromString("None"));
+				}
+				bCanInteractivceLastFrame = IsValid(InteractiveTarget);
+			}
 }
 
 
@@ -191,7 +210,7 @@ void APlayerCharacter::Interaction()
 	if (IHandTarget&& IHandTarget->AttachToPoint(HandTarget, InteractiveTarget))
 	{
 		SetActorTickEnabled(false);
-		OnInteractiveChanged.Broadcast(false);
+		//OnInteractiveChanged.Broadcast(false);
 		bIsPickUp = true;
 	}
 	else

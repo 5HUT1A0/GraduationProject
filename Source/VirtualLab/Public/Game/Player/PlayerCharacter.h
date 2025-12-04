@@ -11,7 +11,7 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGrabEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractiveChanged, bool, bNewState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractiveChanged, FText, bNewState);
 
 
 class AInteractiveItemsBase;
@@ -40,6 +40,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnInteractiveChanged OnInteractiveChanged;
 
+	UFUNCTION(BlueprintCallable)
+	FText GetUIName();
 
 
 protected:
@@ -67,8 +69,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction>IA_Interactive;
 
-	UPROPERTY()
-	TObjectPtr<IGrabbable> OnHandTarget;
+	IGrabbable* OnHandTarget = nullptr;
 
 
 	UPROPERTY()
@@ -107,6 +108,9 @@ private:
 	//手中对象
 	UPROPERTY()
 	TObjectPtr<AInteractiveItemsBase> HandTarget;
+
+	 UPROPERTY()
+	 FText UIName;
 
 
 };

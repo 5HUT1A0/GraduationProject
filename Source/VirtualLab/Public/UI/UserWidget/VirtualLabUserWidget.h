@@ -23,6 +23,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UObject>WidgetController;
 
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
+	FText UMGName;
+
 
 	UFUNCTION()
 	void HandleInteractStateChanged(EInteractState NewState);

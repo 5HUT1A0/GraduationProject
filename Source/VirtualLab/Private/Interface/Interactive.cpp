@@ -15,3 +15,4 @@ bool IInteractive::AttachToPoint(const AInteractiveItemsBase* A, const AInteract
 	// д╛хой╣ож
 	return false;
 }
+

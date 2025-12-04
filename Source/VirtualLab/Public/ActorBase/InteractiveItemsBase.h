@@ -12,9 +12,9 @@
 UENUM(BlueprintType)
 enum class EInteractiveObjectType:uint8
 {
-	TypeA UMETA(DisplayName = "酒精灯"),
-	TypeB UMETA(DisplayName = "烧杯"),
-	TypeC UMETA(DisplayName = "搅拌棒")
+	AlcoholBurner UMETA(DisplayName = "AlcoholBurner"),
+	Beaker UMETA(DisplayName = "Beaker"),
+	Stirrer UMETA(DisplayName = "Stirrer")
 };
 
 UCLASS()
@@ -26,6 +26,9 @@ public:
 	
 	AInteractiveItemsBase();
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	EInteractiveObjectType SelfType;
 
 	//是否物体之间交互
 	UPROPERTY()
@@ -45,12 +48,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	TObjectPtr<USceneComponent>JointPoint;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	EInteractiveObjectType SelfType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 	TArray<EInteractiveObjectType>AllowedTypes;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	TObjectPtr<UDataTable>InteractiveRule;
 
 
 
@@ -70,4 +73,5 @@ public:
 
 	//吸附到点接口
 	virtual bool AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget) override;
+
 };

@@ -26,4 +26,5 @@ public:
 
 	virtual bool AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget);
 
+
 };
