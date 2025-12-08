@@ -40,8 +40,6 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnInteractiveChanged OnInteractiveChanged;
 
-	UFUNCTION(BlueprintCallable)
-	FText GetUIName();
 
 
 protected:
@@ -71,6 +69,7 @@ protected:
 
 	IGrabbable* OnHandTarget = nullptr;
 
+	FVector ActorInitLocation;
 
 	UPROPERTY()
 	bool bIsPickUp=true;
@@ -95,10 +94,27 @@ private:
 	UFUNCTION()
 	bool LineTrace(FHitResult& OutHit);
 
+	UFUNCTION()
+	void Stir();
+
 	UPROPERTY()
-	bool bCanInteractivceLastFrame = false;
+	TObjectPtr<APlayerController>PC;
+	
 
+	//屏幕X、Y尺寸
+	int32 ScreenX, ScreenY;
+	
+	//屏幕中心点位置向量
+	FVector2D CenterScreen;
 
+	//搅拌最大半径
+	float MaxRadius = 200.f;
+
+	//鼠标位置
+	FVector2D MousePos;
+
+	//上一帧鼠标位置
+	FVector2D LastMousePos;
 
 
 	//可与手中物品操作的对象

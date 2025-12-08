@@ -20,6 +20,7 @@ AInteractiveItemsBase::AInteractiveItemsBase()
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	Mesh->SetCollisionObjectType(ECC_GameTraceChannel1);
 	Mesh->SetCollisionResponseToAllChannels(ECR_Block);
+	Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 }
 
 
@@ -72,7 +73,8 @@ bool AInteractiveItemsBase::AttachToPoint(const AInteractiveItemsBase* HandTarge
 		FAttachmentTransformRules Rules(EAttachmentRule::KeepRelative,false);
 		Mesh->SetAbsolute(false, false, true);
 		AttachToComponent(OutTarget->JointPoint, Rules);
-		
+		FRotator NewRotation(0.f, 0.f, 0.f);
+		Mesh->SetWorldRotation(NewRotation);
 		Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		
 		bCanInteractive = false;
@@ -86,7 +88,12 @@ bool AInteractiveItemsBase::AttachToPoint(const AInteractiveItemsBase* HandTarge
 void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
 {
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	FAttachmentTransformRules AttachRules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
+	FAttachmentTransformRules AttachRules(
+		EAttachmentRule::SnapToTarget,     // 位置
+		EAttachmentRule::KeepWorld,     // 旋转
+		EAttachmentRule::KeepWorld,     // 缩放
+		false                               // 焊接物理
+	);
 	AttachToComponent(HandComponent, AttachRules);
 	bCanLineTrace = false;
 	
@@ -95,7 +102,9 @@ void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
 //放下逻辑
 void AInteractiveItemsBase::Drop()
 {
+	FRotator NewRotation(0.f, 0.f, 0.f);
 	Mesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+	Mesh->SetWorldRotation(NewRotation);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	bCanLineTrace = true;
 	bCanInteractive = true;

@@ -19,6 +19,6 @@ void AVirtualLabPlayerController::BeginPlay()
 			SubSystem->AddMappingContext(InputMapping.LoadSynchronous(), 0);
 		}
 	}
-
+	bShowMouseCursor = true;
 
 }

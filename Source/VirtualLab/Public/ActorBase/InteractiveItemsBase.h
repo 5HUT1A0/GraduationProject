@@ -31,7 +31,7 @@ public:
 	EInteractiveObjectType SelfType;
 
 	//是否物体之间交互
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	bool bCanInteractive=false;
 
 	//是否启用射线检测
@@ -73,5 +73,13 @@ public:
 
 	//吸附到点接口
 	virtual bool AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget) override;
+
+	//获取Mesh
+	UFUNCTION()
+	UStaticMeshComponent* GetMesh() const { return Mesh; }
+
+	//获取JoinPoint
+	UFUNCTION()
+	USceneComponent* GetJoinPoint()const { return JointPoint; }
 
 };

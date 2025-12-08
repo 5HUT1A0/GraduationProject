@@ -16,3 +16,8 @@ bool IInteractive::AttachToPoint(const AInteractiveItemsBase* A, const AInteract
 	return false;
 }
 
+void IInteractive::SetActorTickLocation(AInteractiveItemsBase* HandTarget, FVector ActorInitLocation, FVector2D OffSet)
+{
+	
+}
+

@@ -12,7 +12,7 @@
 #include"Blueprint/UserWidget.h"
 
 
-
+//构造
 APlayerCharacter::APlayerCharacter()
 {
  	
@@ -32,57 +32,53 @@ APlayerCharacter::APlayerCharacter()
 		RightHand->SetupAttachment(CameraCom);
 	}
 
+
 }
 
-
-
-FText APlayerCharacter::GetUIName()
-{
-	return UIName;
-}
-
+//BeginPlay
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	SetActorTickEnabled(false);
+
+	//获取屏幕尺寸
+	PC = GetWorld()->GetFirstPlayerController();
+	PC->GetViewportSize(ScreenX, ScreenY);
+	CenterScreen= FVector2D(ScreenX * 0.5f, ScreenY * 0.5f);
+
 }
 
 
+//Tick
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	LineTrace(Hit);
-	InteractiveTarget = Cast<AInteractiveItemsBase>(Hit.GetActor());
-	if (InteractiveTarget&&InteractiveTarget->bCanLineTrace)
-	{
-		if (IInteractive* IInteractiveItem=Cast<IInteractive>(InteractiveTarget))
-		{
-			//用于结合逻辑
-			HandTarget->bCanInteractive = IInteractiveItem->MatchInteractiveTags(HandTarget, InteractiveTarget);
+	//LineTrace(Hit);
+	//auto* NewTarget = Cast<AInteractiveItemsBase>(Hit.GetActor());
 
-		}
-	}
-	else
-	{
-		InteractiveTarget = nullptr;
-	}
-			if(IsValid(InteractiveTarget)!=bCanInteractivceLastFrame)
-			{
-				if(IsValid(InteractiveTarget))
-				{
-					auto* Sub = GetGameInstance()->GetSubsystem<UVirtualLabGameInstanceSubsystem>();
-					FText OutUIName = Sub->QueryUI(HandTarget->SelfType, InteractiveTarget->SelfType);
-					UIName = OutUIName;
-					OnInteractiveChanged.Broadcast(OutUIName);
-				}
-				else
-				{
-					OnInteractiveChanged.Broadcast(FText::FromString("None"));
-				}
-				bCanInteractivceLastFrame = IsValid(InteractiveTarget);
-			}
+	//if (NewTarget != InteractiveTarget)
+	//{
+	//	
+	//	InteractiveTarget = NewTarget;
+
+	//	if (InteractiveTarget && InteractiveTarget->bCanLineTrace)
+	//	{
+	//		HandTarget->bCanInteractive = InteractiveTarget->MatchInteractiveTags(HandTarget, InteractiveTarget);
+
+	//		auto* Sub = GetGameInstance()->GetSubsystem<UVirtualLabGameInstanceSubsystem>();
+	//		FText OutUIName = Sub->QueryUI(HandTarget->SelfType, InteractiveTarget->SelfType);
+	//		OnInteractiveChanged.Broadcast(OutUIName);
+	//	}
+	//	else
+	//	{
+	//		OnInteractiveChanged.Broadcast(FText::FromString("None"));
+	//	}
+	//}
+
+	//调用搅拌
+	Stir();
 }
 
 
@@ -177,7 +173,7 @@ void APlayerCharacter::PickAndDown()
 
 
 
-//抓取
+//调用抓取
 void APlayerCharacter::PickUp(const FHitResult& HitResult)
 {
 	if(IGrabbable*GrabTarget=Cast<IGrabbable>(HitResult.GetActor()))
@@ -187,10 +183,15 @@ void APlayerCharacter::PickUp(const FHitResult& HitResult)
 		GrabTarget->Grab(RightHand);
 		OnGrab.Broadcast();
 		bIsPickUp = false;
+
+		PC->SetMouseLocation(CenterScreen.X, CenterScreen.Y);  
+		PC->SetIgnoreLookInput(true);
+		//测试
+		ActorInitLocation = HandTarget->GetActorLocation();//测试,后续改到其他地方
 	}
 }
 
-//放下
+//调用放下
 void APlayerCharacter::PutDown(const FHitResult& HitResult)
 {
 	
@@ -202,7 +203,7 @@ void APlayerCharacter::PutDown(const FHitResult& HitResult)
 	
 }
 
-//与桌子物体交互逻辑
+//调用与桌子物体交互逻辑
 void APlayerCharacter::Interaction()
 {
 	UE_LOG(LogTemp, Display, TEXT("PressedF"));
@@ -210,7 +211,7 @@ void APlayerCharacter::Interaction()
 	if (IHandTarget&& IHandTarget->AttachToPoint(HandTarget, InteractiveTarget))
 	{
 		SetActorTickEnabled(false);
-		//OnInteractiveChanged.Broadcast(false);
+		OnInteractiveChanged.Broadcast(FText::FromString("None"));
 		bIsPickUp = true;
 	}
 	else
@@ -246,6 +247,34 @@ bool APlayerCharacter::LineTrace(FHitResult& OutHit)
 
 		return bHit;
 
+}
+
+void APlayerCharacter::Stir()
+{
+
+	GetWorld()->GetFirstPlayerController()->GetMousePosition(MousePos.X, MousePos.Y);
+
+	if (MousePos != LastMousePos)
+	{
+		FVector2D OffSet = MousePos - CenterScreen;	
+		//Debug
+		GEngine->AddOnScreenDebugMessage(1, 
+			                             2.f,
+			                             FColor::Black,
+			                             FString::Printf(TEXT("Distacne:%d"), OffSet.Size()));
+		if (OffSet.Size()>= MaxRadius)
+		{
+			OffSet = OffSet.GetSafeNormal() * MaxRadius;
+			//PC->SetMouseLocation(OffSet.X, OffSet.Y);
+			
+		}
+		//调用更新位置函数
+		HandTarget->SetActorTickLocation(HandTarget, ActorInitLocation, OffSet);
+		//Debug
+		GEngine->AddOnScreenDebugMessage(2, 2.f, FColor::Green, FString::Printf(TEXT("Offset:%s"), *OffSet.ToString()));
+		LastMousePos = MousePos;
+	}
+	
 }
 
 
