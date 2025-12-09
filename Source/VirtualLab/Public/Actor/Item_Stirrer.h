@@ -9,6 +9,9 @@
 /**
  * 
  */
+class AVirtualLabPlayerController;
+class APlayerCharacter;
+
 UCLASS()
 class VIRTUALLAB_API AItem_Stirrer : public AInteractiveItemsBase
 {
@@ -18,7 +21,9 @@ class VIRTUALLAB_API AItem_Stirrer : public AInteractiveItemsBase
 public:
 	virtual bool AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget) override;
 
-	virtual  void SetActorTickLocation(AInteractiveItemsBase* HandTarget, FVector ActorInitLocation, FVector2D OffSet)override;
+	virtual  void SetActorTickLocation(AInteractiveItemsBase* HandTarget, FVector2D OffSet)override;
+
+	virtual void BeginPlay()override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transfor")
 	FRotator AfterAttchRotation;
@@ -26,4 +31,12 @@ public:
 private:
 	//”≥…‰Àı∑≈
 	float MapScale = 0.01;
+
+	FVector ActorInitLocation;
+
+
+	UPROPERTY()
+	TObjectPtr<AVirtualLabPlayerController>PC;
+	UPROPERTY()
+	TObjectPtr<APlayerCharacter>Player;
 };

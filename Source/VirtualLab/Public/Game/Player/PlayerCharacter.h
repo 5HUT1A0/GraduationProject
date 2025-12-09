@@ -16,6 +16,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractiveChanged, FText, bNewSt
 
 class AInteractiveItemsBase;
 class IGrabbable;
+class AVirtualLabPlayerController;
 
 UCLASS()
 class VIRTUALLAB_API APlayerCharacter : public ACharacter
@@ -67,9 +68,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction>IA_Interactive;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction>IA_QuitInteractive;
+
 	IGrabbable* OnHandTarget = nullptr;
 
 	FVector ActorInitLocation;
+
+	FVector RightHandInitLocation;
 
 	UPROPERTY()
 	bool bIsPickUp=true;
@@ -97,15 +103,12 @@ private:
 	UFUNCTION()
 	void Stir();
 
-	UPROPERTY()
-	TObjectPtr<APlayerController>PC;
-	
+	UFUNCTION()
+	void QuitInteractive();
 
-	//屏幕X、Y尺寸
-	int32 ScreenX, ScreenY;
+	UPROPERTY()
+	TObjectPtr<AVirtualLabPlayerController>PC;
 	
-	//屏幕中心点位置向量
-	FVector2D CenterScreen;
 
 	//搅拌最大半径
 	float MaxRadius = 200.f;

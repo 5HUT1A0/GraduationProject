@@ -19,6 +19,9 @@ void AVirtualLabPlayerController::BeginPlay()
 			SubSystem->AddMappingContext(InputMapping.LoadSynchronous(), 0);
 		}
 	}
-	bShowMouseCursor = true;
+	//bShowMouseCursor = true;
 
+
+	GetViewportSize(ScreenX, ScreenY);
+	CenterScreen = FVector2D(ScreenX * 0.5f, ScreenY * 0.5f);
 }

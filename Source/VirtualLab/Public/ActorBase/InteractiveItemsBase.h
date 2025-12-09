@@ -38,6 +38,12 @@ public:
 	UPROPERTY()
 	bool bCanLineTrace = false;
 
+	UPROPERTY()
+	bool bCanStirring = false;
+
+	UPROPERTY()
+	bool bCanQuitInteractive = false;
+
 protected:
 	
 	virtual void BeginPlay() override;

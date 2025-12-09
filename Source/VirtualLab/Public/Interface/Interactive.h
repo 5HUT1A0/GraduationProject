@@ -26,5 +26,5 @@ public:
 
 	virtual bool AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget);
 
-	virtual void SetActorTickLocation(AInteractiveItemsBase* HandTarget, FVector ActorInitLocation, FVector2D OffSet);
+	virtual void SetActorTickLocation(AInteractiveItemsBase* HandTarget, FVector2D OffSet);
 };

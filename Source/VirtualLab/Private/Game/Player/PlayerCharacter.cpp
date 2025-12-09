@@ -9,6 +9,7 @@
 #include"Interface/Interactive.h"
 #include "ActorBase/InteractiveItemsBase.h"
 #include"Game/VirtualLabGameInstanceSubsystem.h"
+#include"Game/Player/VirtualLabPlayerController.h"
 #include"Blueprint/UserWidget.h"
 
 
@@ -42,10 +43,8 @@ void APlayerCharacter::BeginPlay()
 	
 	SetActorTickEnabled(false);
 
-	//获取屏幕尺寸
-	PC = GetWorld()->GetFirstPlayerController();
-	PC->GetViewportSize(ScreenX, ScreenY);
-	CenterScreen= FVector2D(ScreenX * 0.5f, ScreenY * 0.5f);
+	PC = Cast <AVirtualLabPlayerController>(GetController());
+
 
 }
 
@@ -55,30 +54,34 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//LineTrace(Hit);
-	//auto* NewTarget = Cast<AInteractiveItemsBase>(Hit.GetActor());
+	//射线检测  显示对应UI
+	LineTrace(Hit);
+	auto* NewTarget = Cast<AInteractiveItemsBase>(Hit.GetActor());
 
-	//if (NewTarget != InteractiveTarget)
-	//{
-	//	
-	//	InteractiveTarget = NewTarget;
+	if (NewTarget != InteractiveTarget)
+	{
+		
+		InteractiveTarget = NewTarget;
 
-	//	if (InteractiveTarget && InteractiveTarget->bCanLineTrace)
-	//	{
-	//		HandTarget->bCanInteractive = InteractiveTarget->MatchInteractiveTags(HandTarget, InteractiveTarget);
+		if (InteractiveTarget && InteractiveTarget->bCanLineTrace)
+		{
+			HandTarget->bCanInteractive = InteractiveTarget->MatchInteractiveTags(HandTarget, InteractiveTarget);
 
-	//		auto* Sub = GetGameInstance()->GetSubsystem<UVirtualLabGameInstanceSubsystem>();
-	//		FText OutUIName = Sub->QueryUI(HandTarget->SelfType, InteractiveTarget->SelfType);
-	//		OnInteractiveChanged.Broadcast(OutUIName);
-	//	}
-	//	else
-	//	{
-	//		OnInteractiveChanged.Broadcast(FText::FromString("None"));
-	//	}
-	//}
+			auto* Sub = GetGameInstance()->GetSubsystem<UVirtualLabGameInstanceSubsystem>();
+			FText OutUIName = Sub->QueryUI(HandTarget->SelfType, InteractiveTarget->SelfType);
+			OnInteractiveChanged.Broadcast(OutUIName);
+		}
+		else
+		{
+			OnInteractiveChanged.Broadcast(FText::FromString("None"));
+		}
+	}
 
 	//调用搅拌
-	Stir();
+	if(HandTarget->bCanStirring)
+	{
+		Stir();
+	}
 }
 
 
@@ -104,6 +107,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		if (IA_Interactive)
 		{
 			EnhanceInputComponent->BindAction(IA_Interactive, ETriggerEvent::Triggered, this, &APlayerCharacter::Interaction);
+		}
+		if (IA_QuitInteractive)
+		{
+			EnhanceInputComponent->BindAction(IA_QuitInteractive, ETriggerEvent::Triggered, this, &APlayerCharacter::QuitInteractive);
 		}
 	}
 
@@ -182,12 +189,10 @@ void APlayerCharacter::PickUp(const FHitResult& HitResult)
 		OnHandTarget = GrabTarget;
 		GrabTarget->Grab(RightHand);
 		OnGrab.Broadcast();
+
+		HandTarget->SetOwner(this);
 		bIsPickUp = false;
 
-		PC->SetMouseLocation(CenterScreen.X, CenterScreen.Y);  
-		PC->SetIgnoreLookInput(true);
-		//测试
-		ActorInitLocation = HandTarget->GetActorLocation();//测试,后续改到其他地方
 	}
 }
 
@@ -208,10 +213,11 @@ void APlayerCharacter::Interaction()
 {
 	UE_LOG(LogTemp, Display, TEXT("PressedF"));
 	IInteractive* IHandTarget = Cast<IInteractive>(HandTarget);
+	RightHandInitLocation = RightHand->GetComponentLocation();
 	if (IHandTarget&& IHandTarget->AttachToPoint(HandTarget, InteractiveTarget))
 	{
-		SetActorTickEnabled(false);
-		OnInteractiveChanged.Broadcast(FText::FromString("None"));
+		//SetActorTickEnabled(false);
+		OnRelease.Broadcast(); 
 		bIsPickUp = true;
 	}
 	else
@@ -256,7 +262,7 @@ void APlayerCharacter::Stir()
 
 	if (MousePos != LastMousePos)
 	{
-		FVector2D OffSet = MousePos - CenterScreen;	
+		FVector2D OffSet = MousePos - PC->CenterScreen;	
 		//Debug
 		GEngine->AddOnScreenDebugMessage(1, 
 			                             2.f,
@@ -269,12 +275,24 @@ void APlayerCharacter::Stir()
 			
 		}
 		//调用更新位置函数
-		HandTarget->SetActorTickLocation(HandTarget, ActorInitLocation, OffSet);
+		HandTarget->SetActorTickLocation(HandTarget,OffSet);
 		//Debug
 		GEngine->AddOnScreenDebugMessage(2, 2.f, FColor::Green, FString::Printf(TEXT("Offset:%s"), *OffSet.ToString()));
 		LastMousePos = MousePos;
 	}
 	
+}
+
+void APlayerCharacter::QuitInteractive()
+{
+	if(HandTarget->bCanQuitInteractive)
+	{
+		OnInteractiveChanged.Broadcast(FText::FromString("None"));
+		HandTarget->bCanStirring = false;
+		PC->SetIgnoreLookInput(false);
+		HandTarget->bCanQuitInteractive = false;
+	}
+
 }
 
 
