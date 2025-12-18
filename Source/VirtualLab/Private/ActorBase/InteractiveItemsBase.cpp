@@ -32,7 +32,6 @@ void AInteractiveItemsBase::BeginPlay()
 }
 
 
-
 //匹配标签
 bool AInteractiveItemsBase::MatchInteractiveTags(const AInteractiveItemsBase* HandTarget,const AInteractiveItemsBase* OutTarget)
 {
@@ -63,7 +62,7 @@ bool AInteractiveItemsBase::MatchInteractiveTags(const AInteractiveItemsBase* Ha
 }
 
 //结合逻辑
-bool AInteractiveItemsBase::AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget)
+bool AInteractiveItemsBase::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget)
 {
 	if(OutTarget&&HandTarget->bCanInteractive)
 	{
@@ -78,6 +77,7 @@ bool AInteractiveItemsBase::AttachToPoint(const AInteractiveItemsBase* HandTarge
 		Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		
 		bCanInteractive = false;
+		OutTarget->bCanShowUI = false;
 		return true;
 	}
 	return false;
@@ -95,7 +95,7 @@ void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
 		false                               // 焊接物理
 	);
 	AttachToComponent(HandComponent, AttachRules);
-	bCanLineTrace = false;
+	bCanShowUI = false;
 	
 }
 
@@ -106,7 +106,7 @@ void AInteractiveItemsBase::Drop()
 	Mesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 	Mesh->SetWorldRotation(NewRotation);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	bCanLineTrace = true;
+	bCanShowUI = true;
 	bCanInteractive = true;
 }
 

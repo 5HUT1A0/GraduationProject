@@ -13,10 +13,11 @@ void AVirtualLabPlayerController::BeginPlay()
 
 	if (UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		if(InputMapping.IsValid()||InputMapping.LoadSynchronous())
+		if(InputMapping)
 		{
 			SubSystem->ClearAllMappings();
-			SubSystem->AddMappingContext(InputMapping.LoadSynchronous(), 0);
+			SubSystem->AddMappingContext(InputMapping, 0);
+			CurrentMapping = InputMapping;
 		}
 	}
 	//bShowMouseCursor = true;
@@ -24,4 +25,26 @@ void AVirtualLabPlayerController::BeginPlay()
 
 	GetViewportSize(ScreenX, ScreenY);
 	CenterScreen = FVector2D(ScreenX * 0.5f, ScreenY * 0.5f);
+}
+
+void AVirtualLabPlayerController::SwitchInputMapping(EMappingType MappingType)
+{
+	UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	if (CurrentMapping)
+	{
+		SubSystem->RemoveMappingContext(CurrentMapping);
+	}
+	switch (MappingType)
+	{
+	case EMappingType::InputMapping:
+		SubSystem->AddMappingContext(InputMapping, 0);
+		CurrentMapping = InputMapping;
+		break;
+	case EMappingType::PourMappint:
+		SubSystem->AddMappingContext(PourMapping, 1);
+		CurrentMapping = PourMapping;
+		break;
+	default:
+		break;
+	}
 }

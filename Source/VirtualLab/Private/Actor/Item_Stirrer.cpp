@@ -10,7 +10,7 @@ AItem_Stirrer::AItem_Stirrer()
 	AfterAttchRotation = FRotator(0.f, 90.f, 0.f);
 }
 
-bool AItem_Stirrer::AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget)
+bool AItem_Stirrer::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget)
 {
 	if (OutTarget && HandTarget->bCanInteractive)
 	{

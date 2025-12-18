@@ -35,12 +35,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGrabEvent OnRelease;
 
-	UPROPERTY()
 	FHitResult Hit;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnInteractiveChanged OnInteractiveChanged;
 
+	bool bCanPickUp = true;
 
 
 protected:
@@ -55,6 +55,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USceneComponent> RightHand;
+
+
 	//输入动作
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_Move;
@@ -77,8 +79,6 @@ protected:
 
 	FVector RightHandInitLocation;
 
-	UPROPERTY()
-	bool bIsPickUp=true;
 
 
 private:
@@ -88,22 +88,16 @@ private:
 	void PickAndDown();
 
 	//功能函数
-	UFUNCTION()
 	void PickUp(const FHitResult& HitResult);
 
-	UFUNCTION()
 	void PutDown(const FHitResult& HitResult);
 
-	UFUNCTION()
 	void Interaction();
 
-	UFUNCTION()
 	bool LineTrace(FHitResult& OutHit);
 
-	UFUNCTION()
 	void Stir();
 
-	UFUNCTION()
 	void QuitInteractive();
 
 	UPROPERTY()
@@ -128,7 +122,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<AInteractiveItemsBase> HandTarget;
 
-	 UPROPERTY()
 	 FText UIName;
 
 

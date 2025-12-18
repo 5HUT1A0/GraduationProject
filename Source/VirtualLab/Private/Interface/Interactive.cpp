@@ -10,7 +10,7 @@ bool IInteractive::MatchInteractiveTags(const AInteractiveItemsBase* A, const AI
 	return false;
 }
 
-bool IInteractive::AttachToPoint(const AInteractiveItemsBase* A, const AInteractiveItemsBase* B)
+bool IInteractive::AttachToPoint( AInteractiveItemsBase* A,  AInteractiveItemsBase* B)
 {
 	// д╛хой╣ож
 	return false;
@@ -21,3 +21,12 @@ void IInteractive::SetActorTickLocation(AInteractiveItemsBase* HandTarget, FVect
 	
 }
 
+void IInteractive::HasAttachPoint(AInteractiveItemsBase* CheckTarget)
+{
+
+}
+
+bool IInteractive::bBeingAttached(IInteractive* InspectionItem)
+{
+	return true;
+}

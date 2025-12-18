@@ -19,7 +19,7 @@ class VIRTUALLAB_API AItem_Stirrer : public AInteractiveItemsBase
 	AItem_Stirrer();
 
 public:
-	virtual bool AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget) override;
+	virtual bool AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget) override;
 
 	virtual  void SetActorTickLocation(AInteractiveItemsBase* HandTarget, FVector2D OffSet)override;
 

@@ -45,7 +45,6 @@ void APlayerCharacter::BeginPlay()
 
 	PC = Cast <AVirtualLabPlayerController>(GetController());
 
-
 }
 
 
@@ -63,10 +62,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 		
 		InteractiveTarget = NewTarget;
 
-		if (InteractiveTarget && InteractiveTarget->bCanLineTrace)
-		{
-			HandTarget->bCanInteractive = InteractiveTarget->MatchInteractiveTags(HandTarget, InteractiveTarget);
 
+		//查表匹配UI
+		if (InteractiveTarget && InteractiveTarget->bCanShowUI)
+		{
+			//UE_LOG(LogTemp, Display, TEXT("%s"), InteractiveTarget->bCanLineTrace?TEXT("True"):TEXT("fasle"));
+			HandTarget->bCanInteractive = InteractiveTarget->MatchInteractiveTags(HandTarget, InteractiveTarget);
 			auto* Sub = GetGameInstance()->GetSubsystem<UVirtualLabGameInstanceSubsystem>();
 			FText OutUIName = Sub->QueryUI(HandTarget->SelfType, InteractiveTarget->SelfType);
 			OnInteractiveChanged.Broadcast(OutUIName);
@@ -75,6 +76,41 @@ void APlayerCharacter::Tick(float DeltaTime)
 		{
 			OnInteractiveChanged.Broadcast(FText::FromString("None"));
 		}
+
+		//查结合点
+		if (InteractiveTarget && InteractiveTarget->bNeedCheckPoint)
+		{
+			IInteractive* CheckPointTarget = Cast<IInteractive>(InteractiveTarget);
+			CheckPointTarget->HasAttachPoint(InteractiveTarget);
+		}
+
+		if (RightHand->GetAttachChildren().IsEmpty())
+		{
+			IInteractive* InspectionItem = Cast<IInteractive>(InteractiveTarget);
+			if (InspectionItem)
+			{
+				if(InspectionItem->bBeingAttached(InspectionItem))
+				{
+					bCanPickUp = true;
+					UE_LOG(LogTemp, Display, TEXT("true in Tick"));
+				}
+				else
+				{
+					bCanPickUp = false;
+					UE_LOG(LogTemp, Display, TEXT("false in Tick"));
+				}
+			}
+			else
+			{
+				bCanPickUp = true;
+				UE_LOG(LogTemp, Display, TEXT("true in Tick"));
+			}
+		}
+		else
+		{
+			bCanPickUp = false;
+		}
+
 	}
 
 	//调用搅拌
@@ -164,12 +200,12 @@ void APlayerCharacter::PickAndDown()
 			return;
 		}
 
-		if (HitActor->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel1 && bIsPickUp)
+		if (HitActor->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel1 && bCanPickUp)
 		{
 			PickUp(Hit);
 			SetActorTickEnabled(true);
 		}
-		else if (HitActor->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel2 && !bIsPickUp)
+		else if (HitActor->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel2 && !bCanPickUp)
 		{
 			PutDown(Hit);
 			SetActorTickEnabled(false);
@@ -191,7 +227,7 @@ void APlayerCharacter::PickUp(const FHitResult& HitResult)
 		OnGrab.Broadcast();
 
 		HandTarget->SetOwner(this);
-		bIsPickUp = false;
+		bCanPickUp = false;
 
 	}
 }
@@ -204,7 +240,7 @@ void APlayerCharacter::PutDown(const FHitResult& HitResult)
 		OnHandTarget->GetGrabbedActor()->SetActorLocation(HitResult.ImpactPoint);
 		OnRelease.Broadcast();
 		HandTarget = nullptr;
-		bIsPickUp = true;
+		bCanPickUp = true;
 	
 }
 
@@ -216,9 +252,8 @@ void APlayerCharacter::Interaction()
 	RightHandInitLocation = RightHand->GetComponentLocation();
 	if (IHandTarget&& IHandTarget->AttachToPoint(HandTarget, InteractiveTarget))
 	{
-		//SetActorTickEnabled(false);
 		OnRelease.Broadcast(); 
-		bIsPickUp = true;
+		bCanPickUp = true;
 	}
 	else
 	{
@@ -242,7 +277,7 @@ bool APlayerCharacter::LineTrace(FHitResult& OutHit)
 	bool bHit = GetWorld()->LineTraceSingleByObjectType(OutHit, StartLocation, EndLocation, ObjectParms, Params);
 	//Debug射线
 	FColor DebugColor = bHit ? FColor::Green : FColor::Red;
-	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, DebugColor, false, 2.f, 0, 1.f);
+	DrawDebugLine(GetWorld(), StartLocation, EndLocation, DebugColor, false, 2.f, 0, 1.f);
 		//DebugPoint
 	/*	DrawDebugPoint(GetWorld(), OutHit.ImpactPoint, 10.0f, FColor::Yellow, false, 2.f);
 		if(OutHit.GetActor())
@@ -276,6 +311,9 @@ void APlayerCharacter::Stir()
 		}
 		//调用更新位置函数
 		HandTarget->SetActorTickLocation(HandTarget,OffSet);
+
+		bCanPickUp = false;
+
 		//Debug
 		GEngine->AddOnScreenDebugMessage(2, 2.f, FColor::Green, FString::Printf(TEXT("Offset:%s"), *OffSet.ToString()));
 		LastMousePos = MousePos;
@@ -291,6 +329,7 @@ void APlayerCharacter::QuitInteractive()
 		HandTarget->bCanStirring = false;
 		PC->SetIgnoreLookInput(false);
 		HandTarget->bCanQuitInteractive = false;
+		bCanPickUp = true;
 	}
 
 }

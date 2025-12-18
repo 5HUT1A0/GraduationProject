@@ -13,6 +13,12 @@
 class UInputMappingContext;
 class UInputAction;
 
+UENUM(BlueprintType)
+enum class EMappingType :uint8
+{
+  InputMapping,
+  PourMappint
+};
 
 
 UCLASS()
@@ -22,6 +28,8 @@ class VIRTUALLAB_API AVirtualLabPlayerController : public APlayerController
 
 public:
 	virtual void BeginPlay() override;
+
+	void SwitchInputMapping(EMappingType MappingType);
 
 	//屏幕X、Y尺寸
 	int32 ScreenX, ScreenY;
@@ -33,8 +41,13 @@ public:
 protected:
 	/*输入映射上下文*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	TSoftObjectPtr<UInputMappingContext> InputMapping;
+	TObjectPtr<UInputMappingContext> InputMapping;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputMappingContext> PourMapping;
+
+	UPROPERTY()
+	TObjectPtr<UInputMappingContext>CurrentMapping;
 	
 private:
 

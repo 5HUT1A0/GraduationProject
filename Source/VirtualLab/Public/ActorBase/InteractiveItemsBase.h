@@ -34,19 +34,24 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	bool bCanInteractive=false;
 
-	//是否启用射线检测
-	UPROPERTY()
-	bool bCanLineTrace = false;
+	//是否显示专属UI（用于手中物品与桌面上物品比较从而显示）
+	bool bCanShowUI = false;
 
-	UPROPERTY()
+	//是否可搅拌
 	bool bCanStirring = false;
 
-	UPROPERTY()
+	//是否可退出交互
 	bool bCanQuitInteractive = false;
+
+	//是否可继续操作
+	bool bNeedCheckPoint=false;
 
 protected:
 	
 	virtual void BeginPlay() override;
+
+
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Component")
 	TObjectPtr<UStaticMeshComponent> Mesh;
@@ -78,7 +83,7 @@ public:
 	virtual bool MatchInteractiveTags(const AInteractiveItemsBase* HandTarget,const AInteractiveItemsBase* OutTarget) override;
 
 	//吸附到点接口
-	virtual bool AttachToPoint(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget) override;
+	virtual bool AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget) override;
 
 	//获取Mesh
 	UFUNCTION()
@@ -87,5 +92,6 @@ public:
 	//获取JoinPoint
 	UFUNCTION()
 	USceneComponent* GetJoinPoint()const { return JointPoint; }
+
 
 };
