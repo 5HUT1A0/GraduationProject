@@ -10,7 +10,7 @@ AItem_Stirrer::AItem_Stirrer()
 	AfterAttchRotation = FRotator(0.f, 90.f, 0.f);
 }
 
-bool AItem_Stirrer::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget)
+void AItem_Stirrer::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget)
 {
 	if (OutTarget && HandTarget->bCanInteractive)
 	{
@@ -34,12 +34,13 @@ bool AItem_Stirrer::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteract
 
 
 		//相关布尔值设置
+		HandTarget->bContinue = true;
 		bCanStirring = true;
 		bCanInteractive = false;
 		bCanQuitInteractive = true;
-		return true;
+		
 	}
-	return false;
+	
 }
 
 void AItem_Stirrer::SetActorTickLocation(AInteractiveItemsBase* HandTarget, FVector2D OffSet)
@@ -55,5 +56,15 @@ void AItem_Stirrer::BeginPlay()
     Super::BeginPlay();
 
 	PC = Cast <AVirtualLabPlayerController>(GetWorld()->GetFirstPlayerController());
+}
+
+void AItem_Stirrer::HasAttachPoint(AInteractiveItemsBase* CheckTarget)
+{
+	if (bBeingAttached(CheckTarget))
+	{
+		//广播更新UI
+		Player = Cast<APlayerCharacter>(GetOwner());
+		Player->OnInteractiveChanged.Broadcast(NSLOCTEXT("Interactive", "Abort", "继续操作"));
+	}
 }
 

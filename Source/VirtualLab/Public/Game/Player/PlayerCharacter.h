@@ -42,6 +42,8 @@ public:
 
 	bool bCanPickUp = true;
 
+	bool bUsing = false;
+
 
 protected:
 	
@@ -73,6 +75,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction>IA_QuitInteractive;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction>IA_Pour;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction>IA_Trans;
+
 	IGrabbable* OnHandTarget = nullptr;
 
 	FVector ActorInitLocation;
@@ -100,6 +108,9 @@ private:
 
 	void QuitInteractive();
 
+	void Pour(const FInputActionValue& Value);
+
+	void ActorTransform(const FInputActionValue& Value);
 	UPROPERTY()
 	TObjectPtr<AVirtualLabPlayerController>PC;
 	
@@ -123,6 +134,11 @@ private:
 	TObjectPtr<AInteractiveItemsBase> HandTarget;
 
 	 FText UIName;
+
+	 UPROPERTY()
+	 TObjectPtr<AInteractiveItemsBase>UsingTarget;
+
+	 TObjectPtr<AInteractiveItemsBase>LastInteractiveTarget;
 
 
 };

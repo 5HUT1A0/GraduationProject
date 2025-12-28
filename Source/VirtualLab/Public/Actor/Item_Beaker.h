@@ -23,14 +23,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	TObjectPtr<USceneComponent>PointForBeaker;
 
-	virtual bool AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget) override;
+	virtual void AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget) override;
 
 	virtual void BeginPlay()override;
 
 	virtual void HasAttachPoint(AInteractiveItemsBase* CheckTarget) override;
 
-	//附着物为True，被附着为false
-	virtual bool bBeingAttached(IInteractive* InspectionItem)override;
+	virtual void PourDowm(const FInputActionValue& Value) override;
+
+	virtual void Translation(const FInputActionValue& Value)override;
+
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transfor")
@@ -41,5 +43,7 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<APlayerCharacter>Player;
+
+	FRotator NewRotator;
 
 };

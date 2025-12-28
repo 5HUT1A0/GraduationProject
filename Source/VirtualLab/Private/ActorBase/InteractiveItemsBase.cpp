@@ -62,7 +62,7 @@ bool AInteractiveItemsBase::MatchInteractiveTags(const AInteractiveItemsBase* Ha
 }
 
 //结合逻辑
-bool AInteractiveItemsBase::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget)
+void AInteractiveItemsBase::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget)
 {
 	if(OutTarget&&HandTarget->bCanInteractive)
 	{
@@ -78,9 +78,9 @@ bool AInteractiveItemsBase::AttachToPoint( AInteractiveItemsBase* HandTarget,  A
 		
 		bCanInteractive = false;
 		OutTarget->bCanShowUI = false;
-		return true;
+		
 	}
-	return false;
+	
 }
 
 
@@ -96,6 +96,7 @@ void AInteractiveItemsBase::Grab(USceneComponent* HandComponent)
 	);
 	AttachToComponent(HandComponent, AttachRules);
 	bCanShowUI = false;
+	bContinue = false;
 	
 }
 
@@ -111,5 +112,23 @@ void AInteractiveItemsBase::Drop()
 }
 
 
-
+bool AInteractiveItemsBase::bBeingAttached(IInteractive* InspectionItem)
+{
+	AInteractiveItemsBase* CheckAttached = Cast<AInteractiveItemsBase>(InspectionItem);
+	bool bResult;
+	if (CheckAttached->GetRootComponent()->GetAttachParent())
+	{
+		return bResult=true;
+	}
+	for (auto TargetPoint : CheckAttached->GetRootComponent()->GetAttachChildren())
+	{
+		if (!TargetPoint->GetAttachChildren().IsEmpty())
+		{
+			bResult = false;
+			break;
+		}
+		bResult = true;
+	}
+	return bResult;
+}
 /*这些接口功能可以到时候到这个类的子类里各自重写，现在写的只是默认状态下的功能，之后拓展详细功能*/

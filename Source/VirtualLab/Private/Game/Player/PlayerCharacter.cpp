@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Game/Player/PlayerCharacter.h"
@@ -13,22 +13,22 @@
 #include"Blueprint/UserWidget.h"
 
 
-//¹¹Ôì
+//æ„é€ 
 APlayerCharacter::APlayerCharacter()
 {
  	
 	PrimaryActorTick.bCanEverTick = true;
 
-	//´´½¨×é¼ş²¢ÇÒ½øĞĞÉèÖÃ
+	//åˆ›å»ºç»„ä»¶å¹¶ä¸”è¿›è¡Œè®¾ç½®
 	USceneComponent* RootComp = GetRootComponent();
 	if (RootComp)
 	{
-		//ÉãÏñ»ú×é¼ş
+		//æ‘„åƒæœºç»„ä»¶
 		CameraCom = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 		CameraCom->SetupAttachment(RootComp);
 		CameraCom->bUsePawnControlRotation = true;
 
-		//ÓÒÊÖ×é¼ş
+		//å³æ‰‹ç»„ä»¶
 		RightHand = CreateDefaultSubobject<USceneComponent>(TEXT("RightHand"));
 		RightHand->SetupAttachment(CameraCom);
 	}
@@ -53,75 +53,66 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//ÉäÏß¼ì²â  ÏÔÊ¾¶ÔÓ¦UI
+	//å°„çº¿æ£€æµ‹  æ˜¾ç¤ºå¯¹åº”UI
 	LineTrace(Hit);
 	auto* NewTarget = Cast<AInteractiveItemsBase>(Hit.GetActor());
 
-	if (NewTarget != InteractiveTarget)
+	if (NewTarget != InteractiveTarget&&!bUsing)
 	{
 		
 		InteractiveTarget = NewTarget;
 
 
-		//²é±íÆ¥ÅäUI
+		//æŸ¥è¡¨åŒ¹é…UI
 		if (InteractiveTarget && InteractiveTarget->bCanShowUI)
 		{
-			//UE_LOG(LogTemp, Display, TEXT("%s"), InteractiveTarget->bCanLineTrace?TEXT("True"):TEXT("fasle"));
+			//UE_LOG(LogTemp, DIsValidplay, TEXT("%s"), InteractiveTarget->bCanLineTrace?TEXT("True"):TEXT("fasle"));
 			HandTarget->bCanInteractive = InteractiveTarget->MatchInteractiveTags(HandTarget, InteractiveTarget);
 			auto* Sub = GetGameInstance()->GetSubsystem<UVirtualLabGameInstanceSubsystem>();
 			FText OutUIName = Sub->QueryUI(HandTarget->SelfType, InteractiveTarget->SelfType);
 			OnInteractiveChanged.Broadcast(OutUIName);
 		}
-		else
+		else if(InteractiveTarget==nullptr)
 		{
 			OnInteractiveChanged.Broadcast(FText::FromString("None"));
 		}
 
-		//²é½áºÏµã
-		if (InteractiveTarget && InteractiveTarget->bNeedCheckPoint)
+		//æŸ¥ç»“åˆç‚¹
+		if (InteractiveTarget && InteractiveTarget->bContinue)
 		{
 			IInteractive* CheckPointTarget = Cast<IInteractive>(InteractiveTarget);
 			CheckPointTarget->HasAttachPoint(InteractiveTarget);
 		}
 
-		if (RightHand->GetAttachChildren().IsEmpty())
+		//ç»“åˆç‰©åˆ¤æ–­
+		if (!RightHand->GetAttachChildren().IsEmpty())
 		{
-			IInteractive* InspectionItem = Cast<IInteractive>(InteractiveTarget);
-			if (InspectionItem)
-			{
-				if(InspectionItem->bBeingAttached(InspectionItem))
-				{
-					bCanPickUp = true;
-					UE_LOG(LogTemp, Display, TEXT("true in Tick"));
-				}
-				else
-				{
-					bCanPickUp = false;
-					UE_LOG(LogTemp, Display, TEXT("false in Tick"));
-				}
-			}
-			else
-			{
-				bCanPickUp = true;
-				UE_LOG(LogTemp, Display, TEXT("true in Tick"));
-			}
+			return;
+		}
+		if (IInteractive* InspectionItem = Cast<IInteractive>(InteractiveTarget))
+		{
+			bCanPickUp = InspectionItem->bBeingAttached(InspectionItem);
 		}
 		else
 		{
-			bCanPickUp = false;
+			bCanPickUp = true;
 		}
+
+		UE_LOG(LogTemp, Display, TEXT("PickUp State: %s"),
+			bCanPickUp ? TEXT("true") : TEXT("false"));
+
 
 	}
 
-	//µ÷ÓÃ½Á°è
-	if(HandTarget->bCanStirring)
+	//è°ƒç”¨æ…æ‹Œ
+	if(UsingTarget && UsingTarget->bCanStirring)
 	{
 		Stir();
 	}
 }
 
 
-//¶¯×÷°ó¶¨
+//åŠ¨ä½œç»‘å®š
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -148,13 +139,21 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		{
 			EnhanceInputComponent->BindAction(IA_QuitInteractive, ETriggerEvent::Triggered, this, &APlayerCharacter::QuitInteractive);
 		}
+		if (IA_Pour)
+		{
+			EnhanceInputComponent->BindAction(IA_Pour, ETriggerEvent::Triggered, this, &APlayerCharacter::Pour);
+		}
+		if (IA_Trans)
+		{
+			EnhanceInputComponent->BindAction(IA_Trans, ETriggerEvent::Triggered, this, &APlayerCharacter::ActorTransform);
+		}
 	}
 
 
 }
 
 
-//ÒÆ¶¯Âß¼­
+//ç§»åŠ¨é€»è¾‘
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D InputValue = Value.Get<FVector2D>();
@@ -173,7 +172,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-//ÊÓ½ÇÂß¼­
+//è§†è§’é€»è¾‘
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
 	FVector2D InputValue = Value.Get<FVector2D>();
@@ -187,7 +186,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
     }
 }
 
-//ÄÃÆğ·ÅÏÂµÄ»Øµ÷º¯Êı
+//æ‹¿èµ·æ”¾ä¸‹çš„å›è°ƒå‡½æ•°
 void APlayerCharacter::PickAndDown()
 {
 
@@ -205,7 +204,7 @@ void APlayerCharacter::PickAndDown()
 			PickUp(Hit);
 			SetActorTickEnabled(true);
 		}
-		else if (HitActor->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel2 && !bCanPickUp)
+		else if (HitActor->GetRootComponent()->GetCollisionObjectType() == ECC_GameTraceChannel2 && !bCanPickUp&&!bUsing)
 		{
 			PutDown(Hit);
 			SetActorTickEnabled(false);
@@ -216,7 +215,7 @@ void APlayerCharacter::PickAndDown()
 
 
 
-//µ÷ÓÃ×¥È¡
+//è°ƒç”¨æŠ“å–
 void APlayerCharacter::PickUp(const FHitResult& HitResult)
 {
 	if(IGrabbable*GrabTarget=Cast<IGrabbable>(HitResult.GetActor()))
@@ -232,7 +231,7 @@ void APlayerCharacter::PickUp(const FHitResult& HitResult)
 	}
 }
 
-//µ÷ÓÃ·ÅÏÂ
+//è°ƒç”¨æ”¾ä¸‹
 void APlayerCharacter::PutDown(const FHitResult& HitResult)
 {
 	
@@ -244,25 +243,52 @@ void APlayerCharacter::PutDown(const FHitResult& HitResult)
 	
 }
 
-//µ÷ÓÃÓë×À×ÓÎïÌå½»»¥Âß¼­
+//è°ƒç”¨ä¸æ¡Œå­ç‰©ä½“äº¤äº’é€»è¾‘
 void APlayerCharacter::Interaction()
 {
-	UE_LOG(LogTemp, Display, TEXT("PressedF"));
+	bUsing = true;
+	//UE_LOG(LogTemp, Display, TEXT("PressedF"));
 	IInteractive* IHandTarget = Cast<IInteractive>(HandTarget);
 	RightHandInitLocation = RightHand->GetComponentLocation();
-	if (IHandTarget&& IHandTarget->AttachToPoint(HandTarget, InteractiveTarget))
+	if (IHandTarget&&InteractiveTarget&& InteractiveTarget->bContinue != true)
 	{
+		IHandTarget->AttachToPoint(HandTarget, InteractiveTarget);
+		//LastInteractiveTarget = InteractiveTarget;
 		OnRelease.Broadcast(); 
+		UsingTarget = HandTarget;
 		bCanPickUp = true;
 	}
-	else
+
+	//ç»§ç»­æ“ä½œ
+	if(InteractiveTarget&& InteractiveTarget->bContinue == true)
+	
 	{
-		UE_LOG(LogTemp, Display, TEXT("NoHandTarget "));
+		switch (InteractiveTarget->SelfType)
+		{
+		case EInteractiveObjectType::Stirrer:
+			//æ…æ‹Œå®ç°æ‰€éœ€è®¾ç½®
+			PC->SetMouseLocation(PC->CenterScreen.X, PC->CenterScreen.Y);
+			PC->SetIgnoreLookInput(true);
+			UsingTarget = InteractiveTarget;
+			UsingTarget->ActorInitLocation = UsingTarget->GetRootComponent()->GetAttachParent()->GetComponentLocation();
+			UsingTarget->bCanQuitInteractive = true;
+			OnInteractiveChanged.Broadcast(NSLOCTEXT("Interactive", "Abort", "ä¸­æ­¢"));
+			UsingTarget->bCanStirring = true;
+			break;
+
+		case EInteractiveObjectType::Beaker:
+			PC->SwitchInputMapping(EMappingType::PourMappint);
+			OnInteractiveChanged.Broadcast(NSLOCTEXT("Interactive", "Abort", "ä¸­æ­¢"));
+			UsingTarget = InteractiveTarget;
+			UsingTarget->bCanQuitInteractive = true;
+		}
 	}
+		
+	
 }
 
 
-//ÉäÏß¼ì²â£¨Ö»¸ºÔğ¼ì²â£©
+//å°„çº¿æ£€æµ‹ï¼ˆåªè´Ÿè´£æ£€æµ‹ï¼‰
 bool APlayerCharacter::LineTrace(FHitResult& OutHit)
 {
 	FVector StartLocation = CameraCom->GetComponentLocation();
@@ -275,7 +301,7 @@ bool APlayerCharacter::LineTrace(FHitResult& OutHit)
 	ObjectParms.AddObjectTypesToQuery(ECC_GameTraceChannel2);
 
 	bool bHit = GetWorld()->LineTraceSingleByObjectType(OutHit, StartLocation, EndLocation, ObjectParms, Params);
-	//DebugÉäÏß
+	//Debugå°„çº¿
 	FColor DebugColor = bHit ? FColor::Green : FColor::Red;
 	DrawDebugLine(GetWorld(), StartLocation, EndLocation, DebugColor, false, 2.f, 0, 1.f);
 		//DebugPoint
@@ -309,9 +335,10 @@ void APlayerCharacter::Stir()
 			//PC->SetMouseLocation(OffSet.X, OffSet.Y);
 			
 		}
-		//µ÷ÓÃ¸üĞÂÎ»ÖÃº¯Êı
-		HandTarget->SetActorTickLocation(HandTarget,OffSet);
-
+		//è°ƒç”¨æ›´æ–°ä½ç½®å‡½æ•°
+		UsingTarget->SetActorTickLocation(UsingTarget, OffSet);
+		
+		//è¿™ä¸ªå…¶å®ä¸åº”è¯¥æ”¾åœ¨è¿™è¿™é‡Œ
 		bCanPickUp = false;
 
 		//Debug
@@ -323,15 +350,31 @@ void APlayerCharacter::Stir()
 
 void APlayerCharacter::QuitInteractive()
 {
-	if(HandTarget->bCanQuitInteractive)
+	bUsing = false;
+	if(UsingTarget->bCanQuitInteractive)
 	{
 		OnInteractiveChanged.Broadcast(FText::FromString("None"));
-		HandTarget->bCanStirring = false;
+		UsingTarget->bCanStirring = false;
 		PC->SetIgnoreLookInput(false);
-		HandTarget->bCanQuitInteractive = false;
+		PC->SwitchInputMapping(EMappingType::InputMapping);
+		UsingTarget->bCanQuitInteractive = false;
 		bCanPickUp = true;
+		UE_LOG(LogTemp, Display, TEXT("Stop Using"));
 	}
 
+}
+
+void APlayerCharacter::Pour(const FInputActionValue& Value)
+{
+	UsingTarget->PourDowm(Value);
+	UsingTarget->bCanQuitInteractive = true;
+	
+}
+
+void APlayerCharacter::ActorTransform(const FInputActionValue& Value)
+{
+	UsingTarget->Translation(Value);
+	UsingTarget->bCanQuitInteractive = true;
 }
 
 

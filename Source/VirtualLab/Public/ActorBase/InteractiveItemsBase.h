@@ -44,7 +44,9 @@ public:
 	bool bCanQuitInteractive = false;
 
 	//是否可继续操作
-	bool bNeedCheckPoint=false;
+	bool bContinue=false;
+
+	FVector ActorInitLocation;
 
 protected:
 	
@@ -83,7 +85,10 @@ public:
 	virtual bool MatchInteractiveTags(const AInteractiveItemsBase* HandTarget,const AInteractiveItemsBase* OutTarget) override;
 
 	//吸附到点接口
-	virtual bool AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget) override;
+	virtual void AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget) override;
+
+	//附着物为True，被附着为false
+	virtual bool bBeingAttached(IInteractive* InspectionItem)override;
 
 	//获取Mesh
 	UFUNCTION()

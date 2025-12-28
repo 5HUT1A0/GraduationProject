@@ -19,11 +19,13 @@ class VIRTUALLAB_API AItem_Stirrer : public AInteractiveItemsBase
 	AItem_Stirrer();
 
 public:
-	virtual bool AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget) override;
+	virtual void AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget) override;
 
 	virtual  void SetActorTickLocation(AInteractiveItemsBase* HandTarget, FVector2D OffSet)override;
 
 	virtual void BeginPlay()override;
+
+	virtual void HasAttachPoint(AInteractiveItemsBase* CheckTarget) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Transfor")
 	FRotator AfterAttchRotation;
@@ -32,7 +34,7 @@ private:
 	//”≥…‰Àı∑≈
 	float MapScale = 0.01;
 
-	FVector ActorInitLocation;
+
 
 
 	UPROPERTY()

@@ -14,12 +14,15 @@ AItem_Beaker::AItem_Beaker()
 
 
 
-bool AItem_Beaker::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget)
+void AItem_Beaker::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget)
 {
 	if (OutTarget && HandTarget->bCanInteractive)
 	{
 		//取消与手部结合
 		HandTarget->GetMesh()->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+
+		//切换输入上下文
+		PC->SwitchInputMapping(EMappingType::PourMappint);
 
 		//结合后的位置、旋转设置
 		FAttachmentTransformRules Rules(EAttachmentRule::KeepRelative, false);
@@ -55,12 +58,12 @@ bool AItem_Beaker::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteracti
 		
 		bCanQuitInteractive = true;
 
-		HandTarget->bNeedCheckPoint = true;
-		OutTarget->bNeedCheckPoint = true;
+		HandTarget->bContinue = true;
+		//OutTarget->bContinue = true;
 
-		return true;
+		
 	}
-	return false;
+	
 }
 
 void AItem_Beaker::BeginPlay()
@@ -76,7 +79,9 @@ void AItem_Beaker::HasAttachPoint(AInteractiveItemsBase* CheckTarget)
 	//附着物
 		if (bBeingAttached(CheckTarget))
 		{
-			UE_LOG(LogTemp, Display, TEXT("继续操作"));
+			//广播更新UI
+			Player = Cast<APlayerCharacter>(GetOwner());
+			Player->OnInteractiveChanged.Broadcast(NSLOCTEXT("Interactive", "Abort", "继续操作"));
 		}
 	//被附着物
 		else
@@ -92,15 +97,29 @@ void AItem_Beaker::HasAttachPoint(AInteractiveItemsBase* CheckTarget)
 	
 }
 
-bool AItem_Beaker::bBeingAttached(IInteractive* InspectionItem)
+void AItem_Beaker::PourDowm(const FInputActionValue& Value)
 {
+	float Strength = Value.Get<float>(); // W = 1, 松开 = 0
 
-	if (Cast<AInteractiveItemsBase>(InspectionItem)->GetRootComponent()->GetAttachParent())
-	{
-		return true;
-	}
-	return false;
+	if (FMath::IsNearlyZero(Strength))
+		return;
+
+	FRotator DeltaRot( Strength * 20 * GetWorld()->GetDeltaSeconds(),0.f,0.f);
+	AddActorLocalRotation(DeltaRot);
+
 }
+
+void AItem_Beaker::Translation(const FInputActionValue& Value)
+{
+	float Strength = Value.Get<float>();
+
+	FVector Translation( Strength * 20 * GetWorld()->GetDeltaSeconds(), 0.0, 0.0);
+	FTransform DeltaTran;
+	DeltaTran.SetTranslation(Translation);
+
+	AddActorWorldTransform(DeltaTran);
+}
+
 
 
 

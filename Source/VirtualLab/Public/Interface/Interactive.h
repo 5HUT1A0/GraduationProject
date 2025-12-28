@@ -17,6 +17,7 @@ class UInteractive : public UInterface
  * 
  */
 class AInteractiveItemsBase;
+struct FInputActionValue;
 
 class VIRTUALLAB_API IInteractive
 {
@@ -24,11 +25,15 @@ class VIRTUALLAB_API IInteractive
 public:
 	virtual bool MatchInteractiveTags(const AInteractiveItemsBase* HandTarget, const AInteractiveItemsBase* OutTarget);
 
-	virtual bool AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget);
+	virtual void AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget);
 
 	virtual void SetActorTickLocation(AInteractiveItemsBase* HandTarget, FVector2D OffSet);
 	
 	virtual void HasAttachPoint(AInteractiveItemsBase*CheckTarget);
 
 	virtual bool bBeingAttached(IInteractive* InspectionItem);
+
+	virtual void PourDowm(const FInputActionValue& Value);
+
+	virtual void Translation(const FInputActionValue& Value);
 };

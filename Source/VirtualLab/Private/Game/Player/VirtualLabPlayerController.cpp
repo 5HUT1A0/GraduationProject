@@ -43,6 +43,7 @@ void AVirtualLabPlayerController::SwitchInputMapping(EMappingType MappingType)
 	case EMappingType::PourMappint:
 		SubSystem->AddMappingContext(PourMapping, 1);
 		CurrentMapping = PourMapping;
+		UE_LOG(LogTemp, Display, TEXT("Switch PourMapping"));
 		break;
 	default:
 		break;
