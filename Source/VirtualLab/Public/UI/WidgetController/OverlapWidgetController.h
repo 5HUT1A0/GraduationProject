@@ -15,7 +15,7 @@ UENUM(BlueprintType)
 enum class EInteractState :uint8
 {
 	None UMETA(DisplayName = "无交互"),
-	Hover UMETA(DisplayName = "悬停提示"),
+	BeakerControl UMETA(DisplayName = "溶液操作提示"),
 	Grab UMETA(DisplayName = "抓取提示")
 };
 
@@ -49,5 +49,8 @@ private:
 
 	UFUNCTION()
 	void OnCharacterRelease();
+
+	UFUNCTION()
+	void OnBeakerControl();
 
 };

@@ -45,6 +45,7 @@ void AItem_Beaker::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteracti
 
 		//广播更新UI
 		Player = Cast<APlayerCharacter>(GetOwner());
+		Player->OnBeakerControl.Broadcast();
 		Player->OnInteractiveChanged.Broadcast(NSLOCTEXT("Interactive", "Abort", "中止"));
 
 		

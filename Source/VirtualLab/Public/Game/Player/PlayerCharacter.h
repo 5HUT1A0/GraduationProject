@@ -35,6 +35,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGrabEvent OnRelease;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnGrabEvent OnBeakerControl;
+
 	FHitResult Hit;
 
 	UPROPERTY(BlueprintAssignable)

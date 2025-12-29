@@ -20,7 +20,8 @@ void UVirtualLabUserWidget::HandleInteractStateChanged(EInteractState NewState)
 	case EInteractState::None:
 		ShowNoneUI();
 		break;
-	case EInteractState::Hover:
+	case EInteractState::BeakerControl:
+		ShowBeakerControlUI();
 		break;
 	case EInteractState::Grab:
 		ShowGrabTipsUI();

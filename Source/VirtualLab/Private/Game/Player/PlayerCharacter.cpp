@@ -252,9 +252,11 @@ void APlayerCharacter::Interaction()
 	RightHandInitLocation = RightHand->GetComponentLocation();
 	if (IHandTarget&&InteractiveTarget&& InteractiveTarget->bContinue != true)
 	{
+		OnRelease.Broadcast();
 		IHandTarget->AttachToPoint(HandTarget, InteractiveTarget);
 		//LastInteractiveTarget = InteractiveTarget;
-		OnRelease.Broadcast(); 
+		
+		//OnBeakerControl.Broadcast();
 		UsingTarget = HandTarget;
 		bCanPickUp = true;
 	}
@@ -278,6 +280,7 @@ void APlayerCharacter::Interaction()
 
 		case EInteractiveObjectType::Beaker:
 			PC->SwitchInputMapping(EMappingType::PourMappint);
+			OnBeakerControl.Broadcast();
 			OnInteractiveChanged.Broadcast(NSLOCTEXT("Interactive", "Abort", "中止"));
 			UsingTarget = InteractiveTarget;
 			UsingTarget->bCanQuitInteractive = true;
@@ -353,6 +356,7 @@ void APlayerCharacter::QuitInteractive()
 	bUsing = false;
 	if(UsingTarget->bCanQuitInteractive)
 	{
+		OnRelease.Broadcast();
 		OnInteractiveChanged.Broadcast(FText::FromString("None"));
 		UsingTarget->bCanStirring = false;
 		PC->SetIgnoreLookInput(false);

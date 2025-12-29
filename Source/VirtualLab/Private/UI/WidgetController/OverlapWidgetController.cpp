@@ -10,7 +10,7 @@ void UOverlapWidgetController::SetInteractState(EInteractState NewState)
 	if (CurrentInteractState == NewState)return;
 	CurrentInteractState = NewState;
 	OnInteractStateChanged.Broadcast(NewState);
-	UE_LOG(LogTemp, Display, TEXT("%s "), *StaticEnum<EInteractState>()->GetNameByValue((int64)NewState).ToString());
+	//UE_LOG(LogTemp, Display, TEXT("%s "), *StaticEnum<EInteractState>()->GetNameByValue((int64)NewState).ToString());
 }
 
 
@@ -28,6 +28,7 @@ void UOverlapWidgetController::BindCallBackToDependencies()
 	{
 		PlayerCharacter->OnGrab.AddDynamic(this, &UOverlapWidgetController::OnCharacterGrab);
 		PlayerCharacter->OnRelease.AddDynamic(this, &UOverlapWidgetController::OnCharacterRelease);
+		PlayerCharacter->OnBeakerControl.AddDynamic(this, &UOverlapWidgetController::OnBeakerControl);
 	}
 }
 
@@ -41,4 +42,9 @@ void UOverlapWidgetController::OnCharacterRelease()
 {
 	SetInteractState(EInteractState::None);
 	//UE_LOG(LogTemp, Display, TEXT("None "));
+}
+
+void UOverlapWidgetController::OnBeakerControl()
+{
+	SetInteractState(EInteractState::BeakerControl);
 }

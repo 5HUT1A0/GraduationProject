@@ -37,5 +37,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowGrabTipsUI();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowBeakerControlUI();
 
 };
