@@ -4,11 +4,21 @@
 #include "Actor/Item_Beaker.h"
 #include"Game/Player/VirtualLabPlayerController.h"
 #include"Game/Player/PlayerCharacter.h"
+#include"ActorComponent/BeakerWaterComponent.h"
+#include"NiagaraComponent.h"
 
 AItem_Beaker::AItem_Beaker()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	PointForBeaker = CreateDefaultSubobject<USceneComponent>(TEXT("PointForBeaker"));
 	PointForBeaker->SetupAttachment(RootComponent);
+
+	WaterComponent = CreateDefaultSubobject<UBeakerWaterComponent>(TEXT("WaterComponent"));
+	//WaterComponent->SetupAttachment(RootComponent);
+
+	PourWaterFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("WaterNiagaraComponent"));
+	PourWaterFX->SetupAttachment(RootComponent);
 
 }
 
@@ -18,6 +28,9 @@ void AItem_Beaker::AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteracti
 {
 	if (OutTarget && HandTarget->bCanInteractive)
 	{
+		//更新TargetBeaker
+		TargetBeaker = Cast<AItem_Beaker>(HandTarget);
+
 		//取消与手部结合
 		HandTarget->GetMesh()->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 
@@ -74,6 +87,33 @@ void AItem_Beaker::BeginPlay()
 	PC = Cast<AVirtualLabPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
+void AItem_Beaker::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (!TargetBeaker)return;
+	
+	float TiltAngle = GetTiltAngle();
+
+	float FlowRate = WaterComponent->CalculateFlowRate(TiltAngle);
+
+	//停止粒子效果实现
+	if (FlowRate <= 0.f)
+	{
+		PourWaterFX->Deactivate();
+		return;
+	}
+
+	PourWaterFX->Activate();
+
+	float UseVolume = WaterComponent->ConsumeWater(DeltaTime, FlowRate);
+
+	TargetBeaker->WaterComponent->AddWater(UseVolume);
+
+	PourWaterFX->SetFloatParameter(TEXT("SpawnRate"), FlowRate);
+	
+}
+
 //附着后才激活
 void AItem_Beaker::HasAttachPoint(AInteractiveItemsBase* CheckTarget)
 {
@@ -119,6 +159,12 @@ void AItem_Beaker::Translation(const FInputActionValue& Value)
 	DeltaTran.SetTranslation(Translation);
 
 	AddActorWorldTransform(DeltaTran);
+}
+
+float AItem_Beaker::GetTiltAngle() const
+{
+	const FRotator Rot = GetActorRotation();
+	return FMath::Abs(FRotator::NormalizeAxis(Rot.Pitch));
 }
 
 

@@ -11,6 +11,8 @@
  */
 class AVirtualLabPlayerController;
 class APlayerCharacter;
+class UBeakerWaterComponent;
+class UNiagaraComponent;
 
 UCLASS()
 class VIRTUALLAB_API AItem_Beaker : public AInteractiveItemsBase
@@ -26,6 +28,8 @@ public:
 	virtual void AttachToPoint( AInteractiveItemsBase* HandTarget,  AInteractiveItemsBase* OutTarget) override;
 
 	virtual void BeginPlay()override;
+
+	virtual void Tick(float DeltaTime) override;
 
 	virtual void HasAttachPoint(AInteractiveItemsBase* CheckTarget) override;
 
@@ -45,5 +49,18 @@ public:
 	TObjectPtr<APlayerCharacter>Player;
 
 	FRotator NewRotator;
+
+	UPROPERTY()
+	TObjectPtr<AItem_Beaker> TargetBeaker;
+
+protected:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UBeakerWaterComponent>WaterComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent>PourWaterFX;
+
+	float GetTiltAngle()const;
+
 
 };
